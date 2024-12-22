@@ -5,7 +5,7 @@ default:
 # Run an example
 [group("Run")]
 run example:
-    cargo run --example {{ example }}
+    @cargo run --quiet --example {{ example }}
 
 # Format the source code
 [group("Dev")]
