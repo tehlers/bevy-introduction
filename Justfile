@@ -21,7 +21,7 @@ check-format:
 [group("Verify")]
 test:
     # Uses cargo-nextest to run tests - see https://nexte.st/ for details
-    cargo nextest run --no-tests=pass
+    cargo nextest run --no-tests=pass --examples
 
 # Check the source code for common mistakes
 [group("Verify")]
