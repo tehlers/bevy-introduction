@@ -148,7 +148,11 @@ fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
 
     commands.spawn((
         Sprite::from_image(asset_server.load("sprites/ball.png")),
-        Transform::from_xyz(0.0, -(MAX_Y / 4.0), 0.0),
+        Transform::from_xyz(
+            0.0,
+            -MAX_Y / 2.0 + WALL_THICKNESS + MARGIN + BALL_RADIUS * 2.0,
+            0.0,
+        ),
         Ball {
             velocity: Vec2::new(0.5, 0.5).normalize() * BALL_SPEED,
         },
