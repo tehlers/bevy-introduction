@@ -1,9 +1,7 @@
 use bevy::{
-    input::mouse::MouseMotion,
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
     render::camera::ScalingMode,
-    window::PrimaryWindow,
 };
 
 const MAX_X: f32 = 1920.0;
@@ -13,25 +11,31 @@ const WALL_THICKNESS: f32 = 20.0;
 const BALL_RADIUS: f32 = 12.0;
 const BALL_SPEED: f32 = 600.0;
 const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
-const BAT_SIZE: Vec2 = Vec2::new(124.0, 28.0);
-const BAT_LEFT_BORDER: f32 = -(MAX_X / 2.0) + WALL_THICKNESS + BAT_SIZE.x / 2.0;
-const BAT_RIGHT_BORDER: f32 = -BAT_LEFT_BORDER;
 
 #[derive(Component)]
 struct Ball {
     velocity: Vec2,
 }
 
-#[derive(Component)]
-struct Bat;
+#[derive(Clone, Copy)]
+enum Obstacle {
+    Stone,
+    Wall,
+}
 
 #[derive(Component)]
 struct Collider {
     size: Option<Vec2>,
+    obstacle: Obstacle,
 }
 
 #[derive(Component)]
 struct Stone;
+
+#[derive(Event)]
+struct CollisionEvent {
+    obstacle: Obstacle,
+}
 
 enum WallLocation {
     Top,
@@ -67,7 +71,10 @@ impl Command for SpawnWall {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
             Transform::from_translation(self.location.position()).with_scale(self.location.size()),
-            Collider { size: None },
+            Collider {
+                size: None,
+                obstacle: Obstacle::Wall,
+            },
         ));
     }
 }
@@ -85,6 +92,7 @@ impl Command for SpawnStone {
                 Transform::from_xyz(self.x, self.y, 0.0),
                 Collider {
                     size: Some(STONE_SIZE),
+                    obstacle: Obstacle::Stone,
                 },
                 Stone,
             ));
@@ -92,14 +100,7 @@ impl Command for SpawnStone {
     }
 }
 
-fn setup(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut windows: Query<&mut Window, With<PrimaryWindow>>,
-) {
-    let mut primary_window = windows.single_mut();
-    primary_window.cursor_options.visible = false;
-
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Camera2d,
         Projection::Orthographic(OrthographicProjection {
@@ -132,15 +133,6 @@ fn setup(
         },
     ));
 
-    commands.spawn((
-        Sprite::from_image(asset_server.load("sprites/bat.png")),
-        Transform::from_xyz(0.0, -MAX_Y / 2.0 + WALL_THICKNESS + MARGIN, 0.0),
-        Collider {
-            size: Some(BAT_SIZE),
-        },
-        Bat,
-    ));
-
     for x in (((-MAX_X / 2.0 + WALL_THICKNESS / 2.0 + MARGIN + STONE_SIZE.x / 2.0 + 3.0) as i32)
         ..(MAX_X / 2.0) as i32)
         .step_by((STONE_SIZE.x + MARGIN) as usize)
@@ -167,6 +159,7 @@ fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<(Entity, &Transform, &Collider, Option<&Stone>)>,
+    mut collision_events: EventWriter<CollisionEvent>,
 ) {
     for (mut ball, ball_transform) in &mut balls {
         for (entity, obstacle, collider, maybe_stone) in &obstacles {
@@ -179,6 +172,10 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
+                collision_events.send(CollisionEvent {
+                    obstacle: collider.obstacle,
+                });
+
                 if maybe_stone.is_some() {
                     commands.entity(entity).despawn();
                 }
@@ -206,15 +203,6 @@ fn check_for_collisions(
                     ball.velocity.y = -ball.velocity.y;
                 }
             }
-        }
-    }
-}
-
-fn move_bat(mut motion: EventReader<MouseMotion>, mut bat_query: Query<&mut Transform, With<Bat>>) {
-    for event in motion.read() {
-        for mut bat in &mut bat_query {
-            bat.translation.x += event.delta.x * 2.0;
-            bat.translation.x = bat.translation.x.clamp(BAT_LEFT_BORDER, BAT_RIGHT_BORDER);
         }
     }
 }
@@ -250,11 +238,31 @@ fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collisio
     Some(side)
 }
 
+fn play_sounds(
+    mut commands: Commands,
+    mut collision_events: EventReader<CollisionEvent>,
+    asset_server: Res<AssetServer>,
+) {
+    for event in collision_events.read() {
+        match event.obstacle {
+            Obstacle::Stone => commands.spawn((
+                AudioPlayer::new(asset_server.load("sounds/stone.ogg")),
+                PlaybackSettings::DESPAWN,
+            )),
+            Obstacle::Wall => commands.spawn((
+                AudioPlayer::new(asset_server.load("sounds/wall.ogg")),
+                PlaybackSettings::DESPAWN,
+            )),
+        };
+    }
+}
+
 fn main() {
     let mut app = App::new();
 
     app.add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
-        .add_systems(Update, (apply_velocity, check_for_collisions, move_bat))
+        .add_systems(Update, (apply_velocity, check_for_collisions, play_sounds))
+        .add_event::<CollisionEvent>()
         .run();
 }
