@@ -59,8 +59,8 @@ struct OnTitleScreen;
 #[derive(Component)]
 struct OnGameScreen;
 
-#[derive(Default, Resource)]
-struct Score(u64);
+#[derive(Component)]
+struct Despawning(Timer);
 
 enum WallLocation {
     Top,
@@ -110,9 +110,25 @@ struct SpawnStone {
 
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
+        let layout = TextureAtlasLayout::from_grid(
+            UVec2::new(STONE_SIZE.x as u32, STONE_SIZE.y as u32), /*tile_size*/
+            10,                                                   /*columns*/
+            1,                                                    /*rows*/
+            None,                                                 /*padding*/
+            None,                                                 /*offset*/
+        );
+        let texture_atlas_layouts = world.get_resource_mut::<Assets<TextureAtlasLayout>>();
+        let texture_atlas_layout = texture_atlas_layouts.unwrap().add(layout);
+
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
             world.spawn((
-                Sprite::from_image(asset_server.load("sprites/stone.png")),
+                Sprite::from_atlas_image(
+                    asset_server.load("sprites/stone-animated.png"),
+                    TextureAtlas {
+                        layout: texture_atlas_layout,
+                        index: 0,
+                    },
+                ),
                 Transform::from_xyz(self.x, self.y, 0.0),
                 Collider {
                     size: Some(STONE_SIZE),
@@ -141,9 +157,7 @@ fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWin
     ));
 }
 
-fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>, mut score: ResMut<Score>) {
-    score.0 = 0;
-
+fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.queue(SpawnWall {
         location: WallLocation::Top,
     });
@@ -222,7 +236,9 @@ fn check_for_collisions(
                 });
 
                 if maybe_stone.is_some() {
-                    commands.entity(entity).despawn();
+                    commands
+                        .entity(entity)
+                        .insert(Despawning(Timer::from_seconds(0.01, TimerMode::Repeating)));
                 }
 
                 // Reflect the ball's velocity when it collides
@@ -292,6 +308,25 @@ fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collisio
     Some(side)
 }
 
+fn despawn_stones(
+    mut commands: Commands,
+    time: Res<Time>,
+    mut stones: Query<(Entity, &mut Sprite, &mut Despawning)>,
+) {
+    for (entity, mut sprite, mut despawning) in &mut stones {
+        despawning.0.tick(time.delta());
+        if despawning.0.just_finished() {
+            if let Some(atlas) = &mut sprite.texture_atlas {
+                if atlas.index < 9 {
+                    atlas.index += 1;
+                } else {
+                    commands.entity(entity).despawn();
+                }
+            }
+        }
+    }
+}
+
 fn play_sounds(
     mut commands: Commands,
     mut collision_events: EventReader<CollisionEvent>,
@@ -315,14 +350,6 @@ fn play_sounds(
     }
 }
 
-fn handle_score(mut collision_events: EventReader<CollisionEvent>, mut score: ResMut<Score>) {
-    for event in collision_events.read() {
-        if let Obstacle::Stone = event.obstacle {
-            score.0 += 100;
-        }
-    }
-}
-
 fn check_for_game_over(
     balls: Query<&Transform, With<Ball>>,
     mut game_state: ResMut<NextState<GameState>>,
@@ -334,10 +361,10 @@ fn check_for_game_over(
     }
 }
 
-fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Res<Score>) {
+fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
 
-    let title_font = TextFont {
+    let text_font = TextFont {
         font: font.clone(),
         font_size: 128.0,
         ..default()
@@ -345,28 +372,10 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
 
     commands.spawn((
         Text2d::new("Breakout"),
-        title_font.clone(),
+        text_font.clone(),
         TextLayout::new_with_justify(JustifyText::Center),
         OnTitleScreen,
     ));
-
-    let score_font = TextFont {
-        font: font.clone(),
-        font_size: 64.0,
-        ..default()
-    };
-
-    let mut score_text = commands.spawn((
-        Text2d::new(format!("Last score: {}", score.0)),
-        score_font.clone(),
-        TextLayout::new_with_justify(JustifyText::Center),
-        Transform::from_xyz(0.0, -256.0, 0.0),
-        OnTitleScreen,
-    ));
-
-    if score.0 == 0 {
-        score_text.insert(Visibility::Hidden);
-    }
 }
 
 fn start_game(mut game_state: ResMut<NextState<GameState>>) {
@@ -400,7 +409,7 @@ fn main() {
                 apply_velocity,
                 check_for_collisions,
                 check_for_game_over,
-                handle_score,
+                despawn_stones,
                 move_bat,
                 play_sounds,
             )
@@ -408,47 +417,5 @@ fn main() {
         )
         .add_event::<CollisionEvent>()
         .init_state::<GameState>()
-        .init_resource::<Score>()
         .run();
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_score_increased_only_for_stones() {
-        let mut app = App::new();
-
-        app.init_resource::<Score>()
-            .add_event::<CollisionEvent>()
-            .add_systems(Update, handle_score);
-
-        app.update();
-        assert_eq!(app.world().resource::<Score>().0, 0);
-
-        app.world_mut()
-            .resource_mut::<Events<CollisionEvent>>()
-            .send(CollisionEvent {
-                obstacle: Obstacle::Bat,
-            });
-        app.update();
-        assert_eq!(app.world().resource::<Score>().0, 0);
-
-        app.world_mut()
-            .resource_mut::<Events<CollisionEvent>>()
-            .send(CollisionEvent {
-                obstacle: Obstacle::Wall,
-            });
-        app.update();
-        assert_eq!(app.world().resource::<Score>().0, 0);
-
-        app.world_mut()
-            .resource_mut::<Events<CollisionEvent>>()
-            .send(CollisionEvent {
-                obstacle: Obstacle::Stone,
-            });
-        app.update();
-        assert_eq!(app.world().resource::<Score>().0, 100);
-    }
 }
