@@ -76,3 +76,17 @@ jobs:
           components: rustfmt
       - name: Run cargo fmt
         run: cargo fmt --all -- --check
+
+  # Check whether the code examples are up to date
+  check_code_examples:
+    name: Check code examples
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Check whether the code examples are up to date
+        run: |
+          UPDATED_PRESENTATION=$(mktemp)
+          ./tools/update-example-code.py bevy-introduction.md > $UPDATED_PRESENTATION
+          diff bevy-introduction.md $UPDATED_PRESENTATION
