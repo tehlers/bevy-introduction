@@ -12,6 +12,15 @@ run example:
 format:
     cargo fmt
 
+# Update example code in presentation
+[group("Dev")]
+update-example-code:
+    #! /usr/bin/env sh
+    set -euxo pipefail
+    UPDATED_PRESENTATION=$(mktemp)
+    ./tools/update-example-code.py bevy-introduction.md > $UPDATED_PRESENTATION
+    mv $UPDATED_PRESENTATION bevy-introduction.md
+
 # Check whether the source code is formatted correctly
 [group("Verify")]
 check-format:
