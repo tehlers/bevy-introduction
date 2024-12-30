@@ -13,7 +13,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         Projection::Orthographic(OrthographicProjection {
             scaling_mode: ScalingMode::AutoMin {
                 min_width: 1920.0,
-                min_height: 1080.0,
+                min_height: 1200.0,
             },
             ..OrthographicProjection::default_2d()
         }),
