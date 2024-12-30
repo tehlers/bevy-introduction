@@ -5,14 +5,13 @@ theme:
   name: dark
 options:
   command_prefix: "cmd:"
+  implicit_slide_ends: true
 ---
 
 What is Bevy?
 =============
 
 # Facts about Bevy
-
-<!-- cmd:end_slide -->
 
 Getting started...
 ==================
@@ -25,8 +24,6 @@ Getting started...
 
 The basics
 ==========
-
-<!-- cmd:end_slide -->
 
 Hello world
 ===========
@@ -41,8 +38,6 @@ fn main() {
 ```sh +exec
 cargo run --example 001-hello_world
 ```
-
-<!-- cmd:end_slide -->
 
 Simple Bevy app
 ===============
@@ -59,8 +54,6 @@ fn main() {
 ```sh +exec
 cargo run --example 002-bevy_app
 ```
-
-<!-- cmd:end_slide -->
 
 Systems
 =======
@@ -81,8 +74,6 @@ fn main() {
 ```sh +exec
 just run 003-bevy_hello_world
 ```
-
-<!-- cmd:end_slide -->
 
 Components
 ==========
@@ -110,8 +101,6 @@ fn main() {
 just run 004-dog
 ```
 
-<!-- cmd:end_slide -->
-
 Queries
 =======
 
@@ -135,8 +124,6 @@ fn main() {
 just run 005-barking_dog
 ```
 
-<!-- cmd:end_slide -->
-
 Multiple entities
 =================
 
@@ -152,8 +139,6 @@ fn add_dogs(mut commands: Commands) {
 ```sh +exec
 just run 006-barking_dogs
 ```
-
-<!-- cmd:end_slide -->
 
 Multiple components
 ===================
@@ -180,8 +165,6 @@ fn bark(dogs: Query<(&Dog, &Name)>) {
 just run 007-dogs_with_names
 ```
 
-<!-- cmd:end_slide -->
-
 Reuse of components (1/2)
 =========================
 
@@ -197,8 +180,6 @@ fn add_animals(mut commands: Commands) {
     commands.spawn((Cat, Name("Garfield".to_string())));
 }
 ```
-
-<!-- cmd:end_slide -->
 
 Reuse of components (2/2)
 =========================
@@ -224,8 +205,6 @@ fn main() {
 ```sh +exec
 just run 008-cats
 ```
-
-<!-- cmd:end_slide -->
 
 Plugins
 =======
@@ -254,8 +233,6 @@ just run 009-bevy_minimal_plugins
 Let's write a game!
 ===================
 
-<!-- cmd:end_slide -->
-
 Open a window
 =============
 
@@ -271,8 +248,6 @@ fn main() {
 ```sh +exec
 just run 010-bevy_default_plugins
 ```
-
-<!-- cmd:end_slide -->
 
 Sprites
 =======
@@ -297,8 +272,6 @@ fn main() {
 just run 011-sprite
 ```
 
-<!-- cmd:end_slide -->
-
 Scale screen
 ============
 
@@ -322,8 +295,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 ```sh +exec
 just run 012-scale_screen
 ```
-
-<!-- cmd:end_slide -->
 
 Move sprite (1/2)
 =================
@@ -358,8 +329,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 ```
 
-<!-- cmd:end_slide -->
-
 Move sprite (2/2)
 =================
 
@@ -386,8 +355,6 @@ fn main() {
 just run 013-move_ball
 ```
 
-<!-- cmd:end_slide -->
-
 Walls (1/3)
 ===========
 
@@ -411,8 +378,6 @@ const BALL_SPEED: f32 = 400.0;
         )),
     ));
 ```
-
-<!-- cmd:end_slide -->
 
 Walls (2/3)
 ===========
@@ -450,16 +415,12 @@ Walls (2/3)
     ));
 ```
 
-<!-- cmd:end_slide -->
-
 Walls (3/3)
 ===========
 
 ```sh +exec
 just run 014-add_walls
 ```
-
-<!-- cmd:end_slide -->
 
 Command (1/3)
 =============
@@ -492,8 +453,6 @@ impl WallLocation {
 }
 ```
 
-<!-- cmd:end_slide -->
-
 Command (2/3)
 =============
 
@@ -512,8 +471,6 @@ impl Command for SpawnWall {
     }
 }
 ```
-
-<!-- cmd:end_slide -->
 
 Command (3/3)
 =============
@@ -537,8 +494,6 @@ Command (3/3)
 ```sh +exec
 just run 015-use_command_for_walls
 ```
-
-<!-- cmd:end_slide -->
 
 Collision (1/4)
 ===============
@@ -568,8 +523,6 @@ impl Command for SpawnWall {
 }
 ```
 
-<!-- cmd:end_slide -->
-
 Collision (2/4)
 ===============
 
@@ -598,8 +551,6 @@ use bevy::{
     render::camera::ScalingMode,
 };
 ```
-
-<!-- cmd:end_slide -->
 
 Collision (3/4)
 ===============
@@ -638,8 +589,6 @@ fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collisio
 }
 ```
 
-<!-- cmd:end_slide -->
-
 Collision (4/4)
 ===============
 
@@ -675,8 +624,6 @@ Collision (4/4)
 just run 016-add_collision
 ```
 
-<!-- cmd:end_slide -->
-
 Stones (1/2)
 ============
 
@@ -699,8 +646,6 @@ impl Command for SpawnStone {
     }
 }
 ```
-
-<!-- cmd:end_slide -->
 
 Stones (2/2)
 ============
@@ -732,8 +677,6 @@ const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
 just run 017-add_stones
 ```
 
-<!-- cmd:end_slide -->
-
 Collision with stones (1/3)
 ===========================
 
@@ -758,8 +701,6 @@ impl Command for SpawnWall {
 }
 ```
 
-<!-- cmd:end_slide -->
-
 Collision with stones (2/3)
 ===========================
 
@@ -779,8 +720,6 @@ impl Command for SpawnStone {
     }
 }
 ```
-
-<!-- cmd:end_slide -->
 
 Collision with stones (3/3)
 ===========================
@@ -806,12 +745,8 @@ fn check_for_collisions(
 just run 018-stone_collision
 ```
 
-<!-- cmd:end_slide -->
-
 Caveats and things to keep in mind
 ==================================
-
-<!-- cmd:end_slide -->
 
 Documentation and resources
 ===========================
