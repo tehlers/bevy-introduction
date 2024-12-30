@@ -137,6 +137,24 @@ just run 005-barking_dog
 
 <!-- cmd:end_slide -->
 
+Multiple entities
+=================
+
+<!-- include-code: examples/006-barking_dogs/main.rs§1 -->
+```rust +line_numbers
+fn add_dogs(mut commands: Commands) {
+    commands.spawn(Dog);
+    commands.spawn(Dog);
+    commands.spawn(Dog);
+}
+```
+
+```sh +exec
+just run 006-barking_dogs
+```
+
+<!-- cmd:end_slide -->
+
 <!-- cmd:jump_to_middle -->
 
 Let's write a game!
