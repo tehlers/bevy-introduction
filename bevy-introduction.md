@@ -461,6 +461,85 @@ just run 014-add_walls
 
 <!-- cmd:end_slide -->
 
+Command (1/3)
+=============
+
+<!-- include-code: examples/015-use_command_for_walls/main.rs§1 -->
+```rust +line_numbers {1-6|8|9|10-15|18-22|all}
+enum WallLocation {
+    Top,
+    Bottom,
+    Left,
+    Right,
+}
+
+impl WallLocation {
+    fn position(&self) -> Vec3 {
+        match self {
+            WallLocation::Top => Vec3::new(0.0, MAX_Y / 2.0, 0.0),
+            WallLocation::Bottom => Vec3::new(0.0, -MAX_Y / 2.0, 0.0),
+            WallLocation::Left => Vec3::new(-MAX_X / 2.0, 0.0, 0.0),
+            WallLocation::Right => Vec3::new(MAX_X / 2.0, 0.0, 0.0),
+        }
+    }
+
+    fn size(&self) -> Vec3 {
+        match self {
+            WallLocation::Bottom | WallLocation::Top => Vec3::new(MAX_X, WALL_THICKNESS, 0.0),
+            WallLocation::Left | WallLocation::Right => Vec3::new(WALL_THICKNESS, MAX_Y, 0.0),
+        }
+    }
+}
+```
+
+<!-- cmd:end_slide -->
+
+Command (2/3)
+=============
+
+<!-- include-code: examples/015-use_command_for_walls/main.rs§2 -->
+```rust +line_numbers {1|2|5|6|7-10|all}
+struct SpawnWall {
+    location: WallLocation,
+}
+
+impl Command for SpawnWall {
+    fn apply(self, world: &mut World) {
+        world.spawn((
+            Sprite::from_color(Color::WHITE, Vec2::ONE),
+            Transform::from_translation(self.location.position()).with_scale(self.location.size()),
+        ));
+    }
+}
+```
+
+<!-- cmd:end_slide -->
+
+Command (3/3)
+=============
+
+<!-- include-code: examples/015-use_command_for_walls/main.rs§3 -->
+```rust +line_numbers {1-3|4-6|7-9|10-12|all}
+    commands.queue(SpawnWall {
+        location: WallLocation::Top,
+    });
+    commands.queue(SpawnWall {
+        location: WallLocation::Bottom,
+    });
+    commands.queue(SpawnWall {
+        location: WallLocation::Left,
+    });
+    commands.queue(SpawnWall {
+        location: WallLocation::Right,
+    });
+```
+
+```sh +exec
+just run 015-use_command_for_walls
+```
+
+<!-- cmd:end_slide -->
+
 Caveats and things to keep in mind
 ==================================
 
