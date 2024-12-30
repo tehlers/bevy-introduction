@@ -802,6 +802,98 @@ fn check_for_collisions(
 just run 019-despawn_stones
 ```
 
+Animation (1/3)
+===============
+
+<!-- include-code: examples/020-animate_despawning/main.rs§1 -->
+```rust +line_numbers {3-9|10,11|15-21|all}
+impl Command for SpawnStone {
+    fn apply(self, world: &mut World) {
+        let layout = TextureAtlasLayout::from_grid(
+            UVec2::new(STONE_SIZE.x as u32, STONE_SIZE.y as u32), /*tile_size*/
+            10,                                                   /*columns*/
+            1,                                                    /*rows*/
+            None,                                                 /*padding*/
+            None,                                                 /*offset*/
+        );
+        let texture_atlas_layouts = world.get_resource_mut::<Assets<TextureAtlasLayout>>();
+        let texture_atlas_layout = texture_atlas_layouts.unwrap().add(layout);
+
+        if let Some(asset_server) = world.get_resource::<AssetServer>() {
+            world.spawn((
+                Sprite::from_atlas_image(
+                    asset_server.load("sprites/stone-animated.png"),
+                    TextureAtlas {
+                        layout: texture_atlas_layout,
+                        index: 0,
+                    },
+                ),
+                Transform::from_xyz(self.x, self.y, 0.0),
+                Collider {
+                    size: Some(STONE_SIZE),
+                },
+                Stone,
+            ));
+        }
+    }
+}
+```
+
+Animation (2/3)
+===============
+
+<!-- include-code: examples/020-animate_despawning/main.rs§2 -->
+```rust +line_numbers
+#[derive(Component)]
+struct Despawning(Timer);
+```
+
+<!-- include-code: examples/020-animate_despawning/main.rs§3 -->
+```rust +line_numbers {0|2-3|4|all}
+                if maybe_stone.is_some() {
+                    commands
+                        .entity(entity)
+                        .insert(Despawning(Timer::from_seconds(0.01, TimerMode::Repeating)));
+                }
+```
+
+Animation (3/3)
+===============
+
+<!-- include-code: examples/020-animate_despawning/main.rs§4 -->
+```rust +line_numbers {0|3|4|7|8|9-14|all}
+fn despawn_stones(
+    mut commands: Commands,
+    time: Res<Time>,
+    mut stones: Query<(Entity, &mut Sprite, &mut Despawning)>,
+) {
+    for (entity, mut sprite, mut despawning) in &mut stones {
+        despawning.0.tick(time.delta());
+        if despawning.0.just_finished() {
+            if let Some(atlas) = &mut sprite.texture_atlas {
+                if atlas.index < 9 {
+                    atlas.index += 1;
+                } else {
+                    commands.entity(entity).despawn();
+                }
+            }
+        }
+    }
+}
+```
+
+<!-- include-code: examples/020-animate_despawning/main.rs§5 -->
+```rust +line_numbers {0|3|all}
+        .add_systems(
+            Update,
+            (apply_velocity, check_for_collisions, despawn_stones),
+        )
+```
+
+```sh +exec
+just run 020-animate_despawning
+```
+
 Caveats and things to keep in mind
 ==================================
 

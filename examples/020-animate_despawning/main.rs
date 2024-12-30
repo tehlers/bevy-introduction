@@ -25,8 +25,10 @@ struct Collider {
 #[derive(Component)]
 struct Stone;
 
+// example-start: 2
 #[derive(Component)]
 struct Despawning(Timer);
+// example-end: 2
 
 enum WallLocation {
     Top,
@@ -72,6 +74,7 @@ struct SpawnStone {
     y: f32,
 }
 
+// example-start: 1 {3-9|10,11|15-21|all}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         let layout = TextureAtlasLayout::from_grid(
@@ -102,6 +105,7 @@ impl Command for SpawnStone {
         }
     }
 }
+// example-end: 1
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
@@ -174,11 +178,13 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
+                // example-start: 3 {0|2-3|4|all}
                 if maybe_stone.is_some() {
                     commands
                         .entity(entity)
                         .insert(Despawning(Timer::from_seconds(0.01, TimerMode::Repeating)));
                 }
+                // example-end: 3
 
                 // Reflect the ball's velocity when it collides
                 let mut reflect_x = false;
@@ -238,6 +244,7 @@ fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collisio
     Some(side)
 }
 
+// example-start: 4 {0|3|4|7|8|9-14|all}
 fn despawn_stones(
     mut commands: Commands,
     time: Res<Time>,
@@ -256,15 +263,18 @@ fn despawn_stones(
         }
     }
 }
+// example-end: 4
 
 fn main() {
     let mut app = App::new();
 
     app.add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
+        // example-start: 5 {0|3|all}
         .add_systems(
             Update,
             (apply_velocity, check_for_collisions, despawn_stones),
         )
+        // example-end: 5
         .run();
 }
