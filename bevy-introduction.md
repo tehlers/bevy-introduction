@@ -1,11 +1,32 @@
 ---
 title: Game development with Rust and Bevy
-sub_title: An introduction to Bevy 0.15.0
+sub_title: An introduction to Bevy (Version 0.15.0)
 theme:
   name: dark
 options:
   command_prefix: "cmd:"
 ---
+
+What is Bevy?
+=============
+
+# Facts about Bevy
+
+<!-- cmd:end_slide -->
+
+Getting started...
+==================
+
+# How to install Rust
+
+<!-- cmd:end_slide -->
+
+<!-- cmd:jump_to_middle -->
+
+The basics
+==========
+
+<!-- cmd:end_slide -->
 
 Hello world
 ===========
@@ -46,3 +67,27 @@ fn main() {
     App::new().add_systems(Update, hello_world).run();
 }
 ```
+
+<!-- cmd:end_slide -->
+
+<!-- cmd:jump_to_middle -->
+
+Let's write a game!
+===================
+
+<!-- cmd:end_slide -->
+
+Caveats and things to keep in mind
+==================================
+
+<!-- cmd:end_slide -->
+
+Documentation and resources
+===========================
+
+<!-- cmd:end_slide -->
+
+<!-- cmd:jump_to_middle -->
+
+Thanks for listening and now write some games!
+==============================================
