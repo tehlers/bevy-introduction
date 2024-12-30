@@ -112,6 +112,31 @@ just run 004-dog
 
 <!-- cmd:end_slide -->
 
+Queries
+=======
+
+<!-- include-code: examples/005-barking_dog/main.rs§1 -->
+```rust +line_numbers {1|2-4|10|all}
+fn bark(dogs: Query<&Dog>) {
+    for _ in dogs.iter() {
+        println!("Woof");
+    }
+}
+
+fn main() {
+    let mut app = App::new();
+
+    app.add_systems(Startup, add_dogs).add_systems(Update, bark);
+    app.run();
+}
+```
+
+```sh +exec
+just run 005-barking_dog
+```
+
+<!-- cmd:end_slide -->
+
 <!-- cmd:jump_to_middle -->
 
 Let's write a game!
