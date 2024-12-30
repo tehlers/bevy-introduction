@@ -3,6 +3,7 @@ use bevy::prelude::*;
 #[derive(Component)]
 struct Dog;
 
+// example-start: 1 {1,2|5-7|10|11|12|all}
 #[derive(Component)]
 struct Name(String);
 
@@ -17,6 +18,7 @@ fn bark(dogs: Query<(&Dog, &Name)>) {
         println!("{}: \"Woof\"", name.0);
     }
 }
+// example-end: 1
 
 fn main() {
     let mut app = App::new();

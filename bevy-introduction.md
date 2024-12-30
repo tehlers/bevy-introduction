@@ -155,6 +155,33 @@ just run 006-barking_dogs
 
 <!-- cmd:end_slide -->
 
+Multiple components
+===================
+
+<!-- include-code: examples/007-dogs_with_names/main.rs§1 -->
+```rust +line_numbers {1,2|5-7|10|11|12|all}
+#[derive(Component)]
+struct Name(String);
+
+fn add_dogs(mut commands: Commands) {
+    commands.spawn((Dog, Name("Hachikō".to_string())));
+    commands.spawn((Dog, Name("Laika".to_string())));
+    commands.spawn((Dog, Name("Rantanplan".to_string())));
+}
+
+fn bark(dogs: Query<(&Dog, &Name)>) {
+    for (_, name) in dogs.iter() {
+        println!("{}: \"Woof\"", name.0);
+    }
+}
+```
+
+```sh +exec
+just run 007-dogs_with_names
+```
+
+<!-- cmd:end_slide -->
+
 <!-- cmd:jump_to_middle -->
 
 Let's write a game!
