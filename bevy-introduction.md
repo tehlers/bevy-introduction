@@ -37,6 +37,11 @@ fn main() {
     println!("Hello, world!");
 }
 ```
+
+```sh +exec
+cargo run --example 001-hello_world
+```
+
 <!-- cmd:end_slide -->
 
 Simple Bevy app
@@ -50,6 +55,11 @@ fn main() {
     App::new().run();
 }
 ```
+
+```sh +exec
+cargo run --example 002-bevy_app
+```
+
 <!-- cmd:end_slide -->
 
 Systems
@@ -66,6 +76,10 @@ fn hello_world() {
 fn main() {
     App::new().add_systems(Update, hello_world).run();
 }
+```
+
+```sh +exec
+just run 003-bevy_hello_world
 ```
 
 <!-- cmd:end_slide -->
