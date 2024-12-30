@@ -227,6 +227,28 @@ just run 008-cats
 
 <!-- cmd:end_slide -->
 
+Plugins
+=======
+
+<!-- include-code: examples/009-bevy_minimal_plugins/main.rs§1 -->
+```rust +line_numbers {4|all}
+fn main() {
+    let mut app = App::new();
+
+    app.add_plugins(MinimalPlugins)
+        .add_systems(Startup, add_dogs)
+        .add_systems(Update, (bark, meow));
+
+    app.run();
+}
+```
+
+```sh +exec
+just run 009-bevy_minimal_plugins
+```
+
+<!-- cmd:end_slide -->
+
 <!-- cmd:jump_to_middle -->
 
 Let's write a game!

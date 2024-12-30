@@ -28,6 +28,7 @@ fn meow(cats: Query<(&Cat, &Name)>) {
     }
 }
 
+// example-start: 1 {4|all}
 fn main() {
     let mut app = App::new();
 
@@ -37,3 +38,4 @@ fn main() {
 
     app.run();
 }
+// example-end: 1
