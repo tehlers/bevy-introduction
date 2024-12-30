@@ -1,9 +1,11 @@
 use bevy::{prelude::*, render::camera::ScalingMode};
 
+// example-start: 1 {1-2|3|all}
 const MAX_X: f32 = 1920.0;
 const MAX_Y: f32 = 1200.0;
 const WALL_THICKNESS: f32 = 20.0;
 const BALL_SPEED: f32 = 400.0;
+// example-end: 1
 
 #[derive(Component)]
 struct Ball {
@@ -22,6 +24,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         }),
     ));
 
+    // example-start: 2 {1|3|4-8|all}
     // Top wall
     commands.spawn((
         Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -31,7 +34,9 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             0.0,
         )),
     ));
+    // example-end: 2
 
+    // example-start: 3 {1-9|11-19|21-29|all}
     // Bottom wall
     commands.spawn((
         Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -61,6 +66,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             0.0,
         )),
     ));
+    // example-end: 3
 
     commands.spawn((
         Sprite::from_image(asset_server.load("sprites/ball.png")),

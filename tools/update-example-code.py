@@ -7,8 +7,8 @@ import sys
 INCLUDE_PATTERN = re.compile('<!-- include-code: (.*)§(\\d+) -->')
 
 def load_example_code(filename, example_number):
-    start_pattern = re.compile('// example-start: %s *(.*)' % example_number)
-    end_pattern = re.compile('// example-end: %s' % example_number)
+    start_pattern = re.compile(' *// example-start: %s *(.*)' % example_number)
+    end_pattern = re.compile(' *// example-end: %s' % example_number)
 
     content = []
     with open(filename, 'r') as file:
@@ -16,7 +16,7 @@ def load_example_code(filename, example_number):
 
         for line in file:
             if include_content:
-                if not line.startswith('// example-'):
+                if line.find('// example-') == -1:
                     content.append(line)
                 include_content = not end_pattern.match(line)
             else:

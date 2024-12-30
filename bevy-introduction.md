@@ -388,6 +388,79 @@ just run 013-move_ball
 
 <!-- cmd:end_slide -->
 
+Walls (1/3)
+===========
+
+<!-- include-code: examples/014-add_walls/main.rs§1 -->
+```rust +line_numbers {1-2|3|all}
+const MAX_X: f32 = 1920.0;
+const MAX_Y: f32 = 1200.0;
+const WALL_THICKNESS: f32 = 20.0;
+const BALL_SPEED: f32 = 400.0;
+```
+
+<!-- include-code: examples/014-add_walls/main.rs§2 -->
+```rust +line_numbers {1|3|4-8|all}
+    // Top wall
+    commands.spawn((
+        Sprite::from_color(Color::WHITE, Vec2::ONE),
+        Transform::from_xyz(0.0, MAX_Y / 2.0, 0.0).with_scale(Vec3::new(
+            MAX_X,
+            WALL_THICKNESS,
+            0.0,
+        )),
+    ));
+```
+
+<!-- cmd:end_slide -->
+
+Walls (2/3)
+===========
+
+<!-- include-code: examples/014-add_walls/main.rs§3 -->
+```rust +line_numbers {1-9|11-19|21-29|all}
+    // Bottom wall
+    commands.spawn((
+        Sprite::from_color(Color::WHITE, Vec2::ONE),
+        Transform::from_xyz(0.0, -MAX_Y / 2.0, 0.0).with_scale(Vec3::new(
+            MAX_X,
+            WALL_THICKNESS,
+            0.0,
+        )),
+    ));
+
+    // Left wall
+    commands.spawn((
+        Sprite::from_color(Color::WHITE, Vec2::ONE),
+        Transform::from_xyz(-MAX_X / 2.0, 0.0, 0.0).with_scale(Vec3::new(
+            WALL_THICKNESS,
+            MAX_Y,
+            0.0,
+        )),
+    ));
+
+    // Right wall
+    commands.spawn((
+        Sprite::from_color(Color::WHITE, Vec2::ONE),
+        Transform::from_xyz(MAX_X / 2.0, 0.0, 0.0).with_scale(Vec3::new(
+            WALL_THICKNESS,
+            MAX_Y,
+            0.0,
+        )),
+    ));
+```
+
+<!-- cmd:end_slide -->
+
+Walls (3/3)
+===========
+
+```sh +exec
+just run 014-add_walls
+```
+
+<!-- cmd:end_slide -->
+
 Caveats and things to keep in mind
 ==================================
 
