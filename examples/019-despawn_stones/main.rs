@@ -22,8 +22,10 @@ struct Collider {
     size: Option<Vec2>,
 }
 
+// example-start: 1
 #[derive(Component)]
 struct Stone;
+// example-end: 1
 
 enum WallLocation {
     Top,
@@ -69,6 +71,7 @@ struct SpawnStone {
     y: f32,
 }
 
+// example-start: 2 {0|10|all}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
@@ -83,6 +86,7 @@ impl Command for SpawnStone {
         }
     }
 }
+// example-end: 2
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
@@ -139,6 +143,7 @@ fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     }
 }
 
+// example-start: 3 {1|4|7|17-19|all}
 fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
@@ -158,6 +163,7 @@ fn check_for_collisions(
                 if maybe_stone.is_some() {
                     commands.entity(entity).despawn();
                 }
+                // example-end: 3
 
                 // Reflect the ball's velocity when it collides
                 let mut reflect_x = false;

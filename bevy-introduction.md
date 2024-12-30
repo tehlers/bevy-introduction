@@ -745,6 +745,63 @@ fn check_for_collisions(
 just run 018-stone_collision
 ```
 
+Despawn stones (1/2)
+====================
+
+<!-- include-code: examples/019-despawn_stones/main.rs§1 -->
+```rust +line_numbers
+#[derive(Component)]
+struct Stone;
+```
+
+<!-- include-code: examples/019-despawn_stones/main.rs§2 -->
+```rust +line_numbers {0|10|all}
+impl Command for SpawnStone {
+    fn apply(self, world: &mut World) {
+        if let Some(asset_server) = world.get_resource::<AssetServer>() {
+            world.spawn((
+                Sprite::from_image(asset_server.load("sprites/stone.png")),
+                Transform::from_xyz(self.x, self.y, 0.0),
+                Collider {
+                    size: Some(STONE_SIZE),
+                },
+                Stone,
+            ));
+        }
+    }
+}
+```
+
+Despawn stones (2/2)
+====================
+
+<!-- include-code: examples/019-despawn_stones/main.rs§3 -->
+```rust +line_numbers {1|4|7|17-19|all}
+fn check_for_collisions(
+    mut commands: Commands,
+    mut balls: Query<(&mut Ball, &Transform)>,
+    obstacles: Query<(Entity, &Transform, &Collider, Option<&Stone>)>,
+) {
+    for (mut ball, ball_transform) in &mut balls {
+        for (entity, obstacle, collider, maybe_stone) in &obstacles {
+            let collision = ball_collision(
+                BoundingCircle::new(ball_transform.translation.truncate(), BALL_RADIUS),
+                Aabb2d::new(
+                    obstacle.translation.truncate(),
+                    collider.size.unwrap_or(obstacle.scale.truncate()) / 2.,
+                ),
+            );
+
+            if let Some(collision) = collision {
+                if maybe_stone.is_some() {
+                    commands.entity(entity).despawn();
+                }
+```
+
+```sh +exec
+just run 019-despawn_stones
+```
+
 Caveats and things to keep in mind
 ==================================
 
