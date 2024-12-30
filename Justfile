@@ -7,6 +7,11 @@ default:
 run example:
     @cargo run --quiet --example {{ example }}
 
+# Start presentation
+[group("Run")]
+present:
+    presenterm --present bevy-introduction.md
+
 # Format the source code
 [group("Dev")]
 format:
