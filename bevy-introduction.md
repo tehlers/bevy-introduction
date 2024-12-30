@@ -540,6 +540,142 @@ just run 015-use_command_for_walls
 
 <!-- cmd:end_slide -->
 
+Collision (1/4)
+===============
+
+<!-- include-code: examples/016-add_collision/main.rs§1 -->
+```rust +line_numbers {7-8|4|all}
+const MAX_X: f32 = 1920.0;
+const MAX_Y: f32 = 1200.0;
+const WALL_THICKNESS: f32 = 20.0;
+const BALL_RADIUS: f32 = 12.0;
+const BALL_SPEED: f32 = 600.0;
+
+#[derive(Component)]
+struct Collider;
+```
+
+<!-- include-code: examples/016-add_collision/main.rs§2 -->
+```rust +line_numbers {0|6|all}
+impl Command for SpawnWall {
+    fn apply(self, world: &mut World) {
+        world.spawn((
+            Sprite::from_color(Color::WHITE, Vec2::ONE),
+            Transform::from_translation(self.location.position()).with_scale(self.location.size()),
+            Collider,
+        ));
+    }
+}
+```
+
+<!-- cmd:end_slide -->
+
+Collision (2/4)
+===============
+
+<!-- include-code: examples/016-add_collision/main.rs§3 -->
+```rust +line_numbers {1|2|5|3|6|7-13|all}
+fn check_for_collisions(
+    mut balls: Query<(&mut Ball, &Transform)>,
+    obstacles: Query<&Transform, With<Collider>>,
+) {
+    for (mut ball, ball_transform) in &mut balls {
+        for obstacle in &obstacles {
+            let collision = ball_collision(
+                BoundingCircle::new(ball_transform.translation.truncate(), BALL_RADIUS),
+                Aabb2d::new(
+                    obstacle.translation.truncate(),
+                    obstacle.scale.truncate() / 2.,
+                ),
+            );
+```
+
+<!-- include-code: examples/016-add_collision/main.rs§4 -->
+```rust +line_numbers {0|2|all}
+use bevy::{
+    math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
+    prelude::*,
+    render::camera::ScalingMode,
+};
+```
+
+<!-- cmd:end_slide -->
+
+Collision (3/4)
+===============
+
+<!-- include-code: examples/016-add_collision/main.rs§5 -->
+```rust +line_numbers {1-6|10|11-13|15-29|all}
+enum Collision {
+    Left,
+    Right,
+    Top,
+    Bottom,
+}
+
+// Returns `Some` if `ball` collides with `bounding_box`.
+// The returned `Collision` is the side of `bounding_box` that `ball` hit.
+fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collision> {
+    if !ball.intersects(&bounding_box) {
+        return None;
+    }
+
+    let closest = bounding_box.closest_point(ball.center());
+    let offset = ball.center() - closest;
+    let side = if offset.x.abs() > offset.y.abs() {
+        if offset.x < 0. {
+            Collision::Left
+        } else {
+            Collision::Right
+        }
+    } else if offset.y > 0. {
+        Collision::Top
+    } else {
+        Collision::Bottom
+    };
+
+    Some(side)
+}
+```
+
+<!-- cmd:end_slide -->
+
+Collision (4/4)
+===============
+
+<!-- include-code: examples/016-add_collision/main.rs§6 -->
+```rust +line_numbers {1|8-13|15-23|all}
+            if let Some(collision) = collision {
+                // Reflect the ball's velocity when it collides
+                let mut reflect_x = false;
+                let mut reflect_y = false;
+
+                // Reflect only if the velocity is in the opposite direction of the collision
+                // This prevents the ball from getting stuck inside the bar
+                match collision {
+                    Collision::Left => reflect_x = ball.velocity.x > 0.0,
+                    Collision::Right => reflect_x = ball.velocity.x < 0.0,
+                    Collision::Top => reflect_y = ball.velocity.y < 0.0,
+                    Collision::Bottom => reflect_y = ball.velocity.y > 0.0,
+                }
+
+                // Reflect velocity on the x-axis if we hit something on the x-axis
+                if reflect_x {
+                    ball.velocity.x = -ball.velocity.x;
+                }
+
+                // Reflect velocity on the y-axis if we hit something on the y-axis
+                if reflect_y {
+                    ball.velocity.y = -ball.velocity.y;
+                }
+            }
+```
+
+```sh +exec
+just run 016-add_collision
+```
+
+<!-- cmd:end_slide -->
 Caveats and things to keep in mind
 ==================================
 

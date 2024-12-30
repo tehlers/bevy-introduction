@@ -1,9 +1,12 @@
+// example-start: 4 {0|2|all}
 use bevy::{
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
     render::camera::ScalingMode,
 };
+// example-end: 4
 
+// example-start: 1 {7-8|4|all}
 const MAX_X: f32 = 1920.0;
 const MAX_Y: f32 = 1200.0;
 const WALL_THICKNESS: f32 = 20.0;
@@ -11,12 +14,13 @@ const BALL_RADIUS: f32 = 12.0;
 const BALL_SPEED: f32 = 600.0;
 
 #[derive(Component)]
+struct Collider;
+// example-end: 1
+
+#[derive(Component)]
 struct Ball {
     velocity: Vec2,
 }
-
-#[derive(Component)]
-struct Collider;
 
 enum WallLocation {
     Top,
@@ -47,6 +51,7 @@ struct SpawnWall {
     location: WallLocation,
 }
 
+// example-start: 2 {0|6|all}
 impl Command for SpawnWall {
     fn apply(self, world: &mut World) {
         world.spawn((
@@ -56,6 +61,7 @@ impl Command for SpawnWall {
         ));
     }
 }
+// example-end: 2
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
@@ -97,6 +103,7 @@ fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     }
 }
 
+// example-start: 3 {1|2|5|3|6|7-13|all}
 fn check_for_collisions(
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<&Transform, With<Collider>>,
@@ -110,7 +117,9 @@ fn check_for_collisions(
                     obstacle.scale.truncate() / 2.,
                 ),
             );
+            // example-end: 3
 
+            // example-start: 6 {1|8-13|15-23|all}
             if let Some(collision) = collision {
                 // Reflect the ball's velocity when it collides
                 let mut reflect_x = false;
@@ -135,10 +144,12 @@ fn check_for_collisions(
                     ball.velocity.y = -ball.velocity.y;
                 }
             }
+            // example-end: 6
         }
     }
 }
 
+// example-start: 5 {1-6|10|11-13|15-29|all}
 enum Collision {
     Left,
     Right,
@@ -169,6 +180,7 @@ fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collisio
 
     Some(side)
 }
+// example-end: 5
 
 fn main() {
     let mut app = App::new();
