@@ -6,10 +6,10 @@ use bevy::{
 
 const MAX_X: f32 = 1920.0;
 const MAX_Y: f32 = 1200.0;
-const MARGIN: f32 = 12.0;
 const WALL_THICKNESS: f32 = 20.0;
 const BALL_RADIUS: f32 = 12.0;
 const BALL_SPEED: f32 = 600.0;
+const MARGIN: f32 = 12.0;
 const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
 
 #[derive(Component)]

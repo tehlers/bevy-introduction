@@ -8,10 +8,10 @@ use bevy::{
 
 const MAX_X: f32 = 1920.0;
 const MAX_Y: f32 = 1200.0;
-const MARGIN: f32 = 12.0;
 const WALL_THICKNESS: f32 = 20.0;
 const BALL_RADIUS: f32 = 12.0;
 const BALL_SPEED: f32 = 600.0;
+const MARGIN: f32 = 12.0;
 const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
 const BAT_SIZE: Vec2 = Vec2::new(124.0, 28.0);
 const BAT_LEFT_BORDER: f32 = -(MAX_X / 2.0) + WALL_THICKNESS + BAT_SIZE.x / 2.0;

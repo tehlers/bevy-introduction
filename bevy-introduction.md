@@ -676,6 +676,64 @@ just run 016-add_collision
 ```
 
 <!-- cmd:end_slide -->
+
+Stones (1/2)
+============
+
+<!-- include-code: examples/017-add_stones/main.rs§1 -->
+```rust +line_numbers {1-4|8|9-13|all}
+struct SpawnStone {
+    x: f32,
+    y: f32,
+}
+
+impl Command for SpawnStone {
+    fn apply(self, world: &mut World) {
+        if let Some(asset_server) = world.get_resource::<AssetServer>() {
+            world.spawn((
+                Sprite::from_image(asset_server.load("sprites/stone.png")),
+                Transform::from_xyz(self.x, self.y, 0.0),
+                Collider,
+            ));
+        }
+    }
+}
+```
+
+<!-- cmd:end_slide -->
+
+Stones (2/2)
+============
+
+<!-- include-code: examples/017-add_stones/main.rs§2 -->
+```rust +line_numbers {1|2|all}
+const MARGIN: f32 = 12.0;
+const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
+```
+
+<!-- include-code: examples/017-add_stones/main.rs§3 -->
+```rust +line_numbers {0|1-4|5-7|8-11|all}
+    for x in (((-MAX_X / 2.0 + WALL_THICKNESS / 2.0 + MARGIN + STONE_SIZE.x / 2.0 + 3.0) as i32)
+        ..(MAX_X / 2.0) as i32)
+        .step_by((STONE_SIZE.x + MARGIN) as usize)
+    {
+        for y in (0..((MAX_Y / 2.0 - WALL_THICKNESS / 2.0 - MARGIN - STONE_SIZE.y / 2.0) as i32))
+            .step_by((STONE_SIZE.y + MARGIN) as usize)
+        {
+            commands.queue(SpawnStone {
+                x: x as f32,
+                y: y as f32,
+            });
+        }
+    }
+```
+
+```sh +exec
+just run 017-add_stones
+```
+
+<!-- cmd:end_slide -->
+
 Caveats and things to keep in mind
 ==================================
 
