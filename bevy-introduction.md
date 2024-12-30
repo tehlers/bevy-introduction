@@ -734,6 +734,80 @@ just run 017-add_stones
 
 <!-- cmd:end_slide -->
 
+Collision with stones (1/3)
+===========================
+
+<!-- include-code: examples/018-stone_collision/main.rs§1 -->
+```rust +line_numbers {3|all}
+#[derive(Component)]
+struct Collider {
+    size: Option<Vec2>,
+}
+```
+
+<!-- include-code: examples/018-stone_collision/main.rs§2 -->
+```rust +line_numbers {0|6|all}
+impl Command for SpawnWall {
+    fn apply(self, world: &mut World) {
+        world.spawn((
+            Sprite::from_color(Color::WHITE, Vec2::ONE),
+            Transform::from_translation(self.location.position()).with_scale(self.location.size()),
+            Collider { size: None },
+        ));
+    }
+}
+```
+
+<!-- cmd:end_slide -->
+
+Collision with stones (2/3)
+===========================
+
+<!-- include-code: examples/018-stone_collision/main.rs§3 -->
+```rust +line_numbers {7-9|all}
+impl Command for SpawnStone {
+    fn apply(self, world: &mut World) {
+        if let Some(asset_server) = world.get_resource::<AssetServer>() {
+            world.spawn((
+                Sprite::from_image(asset_server.load("sprites/stone.png")),
+                Transform::from_xyz(self.x, self.y, 0.0),
+                Collider {
+                    size: Some(STONE_SIZE),
+                },
+            ));
+        }
+    }
+}
+```
+
+<!-- cmd:end_slide -->
+
+Collision with stones (3/3)
+===========================
+
+<!-- include-code: examples/018-stone_collision/main.rs§4 -->
+```rust +line_numbers {3|6|11|all}
+fn check_for_collisions(
+    mut balls: Query<(&mut Ball, &Transform)>,
+    obstacles: Query<(&Transform, &Collider)>,
+) {
+    for (mut ball, ball_transform) in &mut balls {
+        for (obstacle, collider) in &obstacles {
+            let collision = ball_collision(
+                BoundingCircle::new(ball_transform.translation.truncate(), BALL_RADIUS),
+                Aabb2d::new(
+                    obstacle.translation.truncate(),
+                    collider.size.unwrap_or(obstacle.scale.truncate()) / 2.,
+                ),
+            );
+```
+
+```sh +exec
+just run 018-stone_collision
+```
+
+<!-- cmd:end_slide -->
+
 Caveats and things to keep in mind
 ==================================
 

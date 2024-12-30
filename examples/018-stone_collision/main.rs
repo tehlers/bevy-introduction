@@ -17,10 +17,12 @@ struct Ball {
     velocity: Vec2,
 }
 
+// example-start: 1 {3|all}
 #[derive(Component)]
 struct Collider {
     size: Option<Vec2>,
 }
+// example-end: 1
 
 enum WallLocation {
     Top,
@@ -51,6 +53,7 @@ struct SpawnWall {
     location: WallLocation,
 }
 
+// example-start: 2 {0|6|all}
 impl Command for SpawnWall {
     fn apply(self, world: &mut World) {
         world.spawn((
@@ -60,12 +63,14 @@ impl Command for SpawnWall {
         ));
     }
 }
+// example-end: 2
 
 struct SpawnStone {
     x: f32,
     y: f32,
 }
 
+// example-start: 3 {7-9|all}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
@@ -79,6 +84,7 @@ impl Command for SpawnStone {
         }
     }
 }
+// example-end: 3
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
@@ -135,6 +141,7 @@ fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     }
 }
 
+// example-start: 4 {3|6|11|all}
 fn check_for_collisions(
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<(&Transform, &Collider)>,
@@ -148,6 +155,7 @@ fn check_for_collisions(
                     collider.size.unwrap_or(obstacle.scale.truncate()) / 2.,
                 ),
             );
+            // example-end: 4
 
             if let Some(collision) = collision {
                 // Reflect the ball's velocity when it collides
