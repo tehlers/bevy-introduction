@@ -1,3 +1,4 @@
+// example-start: 1 {3,4|6|7|13|all}
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -13,3 +14,4 @@ fn main() {
     app.add_systems(Startup, add_dogs);
     app.run();
 }
+// example-end: 1

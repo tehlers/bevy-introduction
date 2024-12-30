@@ -84,6 +84,34 @@ just run 003-bevy_hello_world
 
 <!-- cmd:end_slide -->
 
+Components
+==========
+
+<!-- include-code: examples/004-dog/main.rs§1 -->
+```rust +line_numbers {3,4|6|7|13|all}
+use bevy::prelude::*;
+
+#[derive(Component)]
+struct Dog;
+
+fn add_dogs(mut commands: Commands) {
+    commands.spawn(Dog);
+}
+
+fn main() {
+    let mut app = App::new();
+
+    app.add_systems(Startup, add_dogs);
+    app.run();
+}
+```
+
+```sh +exec
+just run 004-dog
+```
+
+<!-- cmd:end_slide -->
+
 <!-- cmd:jump_to_middle -->
 
 Let's write a game!
