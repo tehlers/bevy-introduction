@@ -17,6 +17,7 @@ struct Ball {
     velocity: Vec2,
 }
 
+// example-start: 1 {1-5|10|13-16|all}
 #[derive(Clone, Copy)]
 enum Obstacle {
     Stone,
@@ -29,13 +30,14 @@ struct Collider {
     obstacle: Obstacle,
 }
 
-#[derive(Component)]
-struct Stone;
-
 #[derive(Event)]
 struct CollisionEvent {
     obstacle: Obstacle,
 }
+// example-end: 1
+
+#[derive(Component)]
+struct Stone;
 
 #[derive(Component)]
 struct Despawning(Timer);
@@ -71,6 +73,7 @@ struct SpawnWall {
 
 impl Command for SpawnWall {
     fn apply(self, world: &mut World) {
+        // example-start: 2 {6|all}
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
             Transform::from_translation(self.location.position()).with_scale(self.location.size()),
@@ -79,6 +82,7 @@ impl Command for SpawnWall {
                 obstacle: Obstacle::Wall,
             },
         ));
+        // example-end: 2
     }
 }
 
@@ -100,6 +104,7 @@ impl Command for SpawnStone {
         let texture_atlas_layout = texture_atlas_layouts.unwrap().add(layout);
 
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
+            // example-start: 3 {0|12|all}
             world.spawn((
                 Sprite::from_atlas_image(
                     asset_server.load("sprites/stone-animated.png"),
@@ -115,6 +120,7 @@ impl Command for SpawnStone {
                 },
                 Stone,
             ));
+            // example-end: 3
         }
     }
 }
@@ -174,6 +180,7 @@ fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     }
 }
 
+// example-start: 4 {0|5|18-20|all}
 fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
@@ -194,6 +201,7 @@ fn check_for_collisions(
                 collision_events.send(CollisionEvent {
                     obstacle: collider.obstacle,
                 });
+                // example-end: 4
 
                 if maybe_stone.is_some() {
                     commands
@@ -278,6 +286,7 @@ fn despawn_stones(
     }
 }
 
+// example-start: 5 {0|3|6|8-11|12-15|all}
 fn play_sounds(
     mut commands: Commands,
     mut collision_events: EventReader<CollisionEvent>,
@@ -296,12 +305,14 @@ fn play_sounds(
         };
     }
 }
+// example-end: 5
 
 fn main() {
     let mut app = App::new();
 
     app.add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
+        // example-start: 6 {0|7|all}
         .add_systems(
             Update,
             (
@@ -311,6 +322,7 @@ fn main() {
                 play_sounds,
             ),
         )
+        // example-end: 6
         .add_event::<CollisionEvent>()
         .run();
 }

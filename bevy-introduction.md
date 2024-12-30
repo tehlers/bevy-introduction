@@ -894,6 +894,135 @@ fn despawn_stones(
 just run 020-animate_despawning
 ```
 
+Events and sounds (1/5)
+=======================
+
+<!-- include-code: examples/021-add_sounds/main.rs§1 -->
+```rust +line_numbers {1-5|10|13-16|all}
+#[derive(Clone, Copy)]
+enum Obstacle {
+    Stone,
+    Wall,
+}
+
+#[derive(Component)]
+struct Collider {
+    size: Option<Vec2>,
+    obstacle: Obstacle,
+}
+
+#[derive(Event)]
+struct CollisionEvent {
+    obstacle: Obstacle,
+}
+```
+
+Events and sounds (2/5)
+=======================
+
+<!-- include-code: examples/021-add_sounds/main.rs§2 -->
+```rust +line_numbers {6|all}
+        world.spawn((
+            Sprite::from_color(Color::WHITE, Vec2::ONE),
+            Transform::from_translation(self.location.position()).with_scale(self.location.size()),
+            Collider {
+                size: None,
+                obstacle: Obstacle::Wall,
+            },
+        ));
+```
+
+<!-- include-code: examples/021-add_sounds/main.rs§3 -->
+```rust +line_numbers {0|12|all}
+            world.spawn((
+                Sprite::from_atlas_image(
+                    asset_server.load("sprites/stone-animated.png"),
+                    TextureAtlas {
+                        layout: texture_atlas_layout,
+                        index: 0,
+                    },
+                ),
+                Transform::from_xyz(self.x, self.y, 0.0),
+                Collider {
+                    size: Some(STONE_SIZE),
+                    obstacle: Obstacle::Stone,
+                },
+                Stone,
+            ));
+```
+
+Events and sounds (3/5)
+=======================
+
+<!-- include-code: examples/021-add_sounds/main.rs§4 -->
+```rust +line_numbers {0|5|18-20|all}
+fn check_for_collisions(
+    mut commands: Commands,
+    mut balls: Query<(&mut Ball, &Transform)>,
+    obstacles: Query<(Entity, &Transform, &Collider, Option<&Stone>)>,
+    mut collision_events: EventWriter<CollisionEvent>,
+) {
+    for (mut ball, ball_transform) in &mut balls {
+        for (entity, obstacle, collider, maybe_stone) in &obstacles {
+            let collision = ball_collision(
+                BoundingCircle::new(ball_transform.translation.truncate(), BALL_RADIUS),
+                Aabb2d::new(
+                    obstacle.translation.truncate(),
+                    collider.size.unwrap_or(obstacle.scale.truncate()) / 2.,
+                ),
+            );
+
+            if let Some(collision) = collision {
+                collision_events.send(CollisionEvent {
+                    obstacle: collider.obstacle,
+                });
+```
+
+Events and sounds (4/5)
+=======================
+
+<!-- include-code: examples/021-add_sounds/main.rs§5 -->
+```rust +line_numbers {0|3|6|8-11|12-15|all}
+fn play_sounds(
+    mut commands: Commands,
+    mut collision_events: EventReader<CollisionEvent>,
+    asset_server: Res<AssetServer>,
+) {
+    for event in collision_events.read() {
+        match event.obstacle {
+            Obstacle::Stone => commands.spawn((
+                AudioPlayer::new(asset_server.load("sounds/stone.ogg")),
+                PlaybackSettings::DESPAWN,
+            )),
+            Obstacle::Wall => commands.spawn((
+                AudioPlayer::new(asset_server.load("sounds/wall.ogg")),
+                PlaybackSettings::DESPAWN,
+            )),
+        };
+    }
+}
+```
+
+Events and sounds (5/5)
+=======================
+
+<!-- include-code: examples/021-add_sounds/main.rs§6 -->
+```rust +line_numbers {0|7|all}
+        .add_systems(
+            Update,
+            (
+                apply_velocity,
+                check_for_collisions,
+                despawn_stones,
+                play_sounds,
+            ),
+        )
+```
+
+```sh +exec
+just run 021-add_sounds
+```
+
 Caveats and things to keep in mind
 ==================================
 
