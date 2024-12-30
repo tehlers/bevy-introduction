@@ -256,6 +256,24 @@ Let's write a game!
 
 <!-- cmd:end_slide -->
 
+Open a window
+=============
+
+<!-- include-code: examples/010-bevy_default_plugins/main.rs§1 -->
+```rust +line_numbers {4|all}
+use bevy::prelude::*;
+
+fn main() {
+    App::new().add_plugins(DefaultPlugins).run();
+}
+```
+
+```sh +exec
+just run 010-bevy_default_plugins
+```
+
+<!-- cmd:end_slide -->
+
 Caveats and things to keep in mind
 ==================================
 

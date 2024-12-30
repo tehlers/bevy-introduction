@@ -5,7 +5,7 @@ default:
 # Run an example
 [group("Run")]
 run example:
-    @cargo run --quiet --example {{ example }}
+    @RUST_LOG=error cargo run --quiet --example {{ example }}
 
 # Start presentation
 [group("Run")]
