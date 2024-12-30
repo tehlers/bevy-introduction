@@ -274,6 +274,31 @@ just run 010-bevy_default_plugins
 
 <!-- cmd:end_slide -->
 
+Sprites
+=======
+
+<!-- include-code: examples/011-sprite/main.rs§1 -->
+```rust +line_numbers {1|2|3|10|all}
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.spawn(Camera2d);
+    commands.spawn(Sprite::from_image(asset_server.load("sprites/ball.png")));
+}
+
+fn main() {
+    let mut app = App::new();
+
+    app.add_plugins(DefaultPlugins)
+        .add_systems(Startup, setup)
+        .run();
+}
+```
+
+```sh +exec
+just run 011-sprite
+```
+
+<!-- cmd:end_slide -->
+
 Caveats and things to keep in mind
 ==================================
 
