@@ -461,5 +461,5 @@ fn main() {
         .init_state::<GameState>()
         .init_resource::<Score>()
         .run();
-        // example-end: 3
+    // example-end: 3
 }

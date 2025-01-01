@@ -453,12 +453,16 @@ fn main() {
         .run();
 }
 
+// example-start: 1 {0|1|1-2|1-2,5-6|all}
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_score_increased_only_for_stones() {
+        // ...
+        // example-end: 1
+        // example-start: 2 {0|1|3-5|7-8|10-14|15-16|all}
         let mut app = App::new();
 
         app.init_resource::<Score>()
@@ -475,7 +479,11 @@ mod tests {
             });
         app.update();
         assert_eq!(app.world().resource::<Score>().0, 0);
+        // ...
+        // example-end: 2
 
+        // example-start: 3 {2-8|10-16|all}
+        // ...
         app.world_mut()
             .resource_mut::<Events<CollisionEvent>>()
             .send(CollisionEvent {
@@ -491,5 +499,6 @@ mod tests {
             });
         app.update();
         assert_eq!(app.world().resource::<Score>().0, 100);
+        // example-end: 3
     }
 }

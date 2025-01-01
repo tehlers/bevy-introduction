@@ -1621,6 +1621,74 @@ fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>, mut score:
 just run 026-add_score
 ```
 
+Testing (1/4)
+=============
+
+<!-- include-code: examples/027-add_test/main.rs§1 -->
+```rust +line_numbers {0|1|1-2|1-2,5-6|all}
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_score_increased_only_for_stones() {
+        // ...
+```
+
+Testing (2/4)
+=============
+
+<!-- include-code: examples/027-add_test/main.rs§2 -->
+```rust +line_numbers {0|1|3-5|7-8|10-14|15-16|all}
+        let mut app = App::new();
+
+        app.init_resource::<Score>()
+            .add_event::<CollisionEvent>()
+            .add_systems(Update, handle_score);
+
+        app.update();
+        assert_eq!(app.world().resource::<Score>().0, 0);
+
+        app.world_mut()
+            .resource_mut::<Events<CollisionEvent>>()
+            .send(CollisionEvent {
+                obstacle: Obstacle::Bat,
+            });
+        app.update();
+        assert_eq!(app.world().resource::<Score>().0, 0);
+        // ...
+```
+
+Testing (3/4)
+=============
+
+<!-- include-code: examples/027-add_test/main.rs§3 -->
+```rust +line_numbers {2-8|10-16|all}
+        // ...
+        app.world_mut()
+            .resource_mut::<Events<CollisionEvent>>()
+            .send(CollisionEvent {
+                obstacle: Obstacle::Wall,
+            });
+        app.update();
+        assert_eq!(app.world().resource::<Score>().0, 0);
+
+        app.world_mut()
+            .resource_mut::<Events<CollisionEvent>>()
+            .send(CollisionEvent {
+                obstacle: Obstacle::Stone,
+            });
+        app.update();
+        assert_eq!(app.world().resource::<Score>().0, 100);
+```
+
+Testing (4/4)
+=============
+
+```sh +exec
+cargo test --example 027-add_test
+```
+
 Caveats and things to keep in mind
 ==================================
 
