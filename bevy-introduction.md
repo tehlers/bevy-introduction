@@ -35,6 +35,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 cargo run --example 001-hello_world
 ```
@@ -51,6 +52,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 cargo run --example 002-bevy_app
 ```
@@ -71,6 +73,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 003-bevy_hello_world
 ```
@@ -97,6 +100,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 004-dog
 ```
@@ -120,6 +124,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 005-barking_dog
 ```
@@ -136,6 +141,7 @@ fn add_dogs(mut commands: Commands) {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 006-barking_dogs
 ```
@@ -161,6 +167,7 @@ fn bark(dogs: Query<(&Dog, &Name)>) {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 007-dogs_with_names
 ```
@@ -202,6 +209,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 008-cats
 ```
@@ -222,6 +230,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 009-bevy_minimal_plugins
 ```
@@ -245,6 +254,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 010-bevy_default_plugins
 ```
@@ -268,6 +278,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 011-sprite
 ```
@@ -292,6 +303,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 012-scale_screen
 ```
@@ -351,6 +363,7 @@ fn main() {
 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 013-move_ball
 ```
@@ -491,6 +504,7 @@ Command (3/3)
     });
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 015-use_command_for_walls
 ```
@@ -620,6 +634,7 @@ Collision (4/4)
             }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 016-add_collision
 ```
@@ -673,6 +688,7 @@ const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
     }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 017-add_stones
 ```
@@ -741,6 +757,7 @@ fn check_for_collisions(
             );
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 018-stone_collision
 ```
@@ -798,6 +815,7 @@ fn check_for_collisions(
                 }
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 019-despawn_stones
 ```
@@ -890,6 +908,7 @@ fn despawn_stones(
         )
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 020-animate_despawning
 ```
@@ -1020,6 +1039,7 @@ Events and sounds (5/5)
         .add_event::<CollisionEvent>()
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 021-add_sounds
 ```
@@ -1271,6 +1291,7 @@ use bevy::{
 };
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 023-add_title
 ```
@@ -1404,6 +1425,7 @@ fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands
         .add_systems(OnExit(GameState::Game), despawn_screen::<OnGameScreen>)
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 024-despawn_with_state_change
 ```
@@ -1494,6 +1516,7 @@ fn check_for_game_over(
         )
 ```
 
+<!-- cmd:pause -->
 ```sh +exec
 just run 025-remove_bottom_wall
 ```
