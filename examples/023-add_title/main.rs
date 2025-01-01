@@ -1,3 +1,4 @@
+// example-start: 7 {0|2}
 use bevy::{
     input::{common_conditions::input_just_pressed, mouse::MouseMotion},
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
@@ -5,6 +6,7 @@ use bevy::{
     render::camera::ScalingMode,
     window::PrimaryWindow,
 };
+// example-end: 7
 
 const MAX_X: f32 = 1920.0;
 const MAX_Y: f32 = 1200.0;
@@ -17,12 +19,14 @@ const BAT_SIZE: Vec2 = Vec2::new(124.0, 28.0);
 const BAT_LEFT_BORDER: f32 = -(MAX_X / 2.0) + WALL_THICKNESS + BAT_SIZE.x / 2.0;
 const BAT_RIGHT_BORDER: f32 = -BAT_LEFT_BORDER;
 
+// example-start: 1 {0|2|4-5|1|3|all}
 #[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
 pub enum GameState {
     #[default]
     Title,
     Game,
 }
+// example-end: 1
 
 #[derive(Component)]
 struct Ball {
@@ -135,6 +139,7 @@ impl Command for SpawnStone {
     }
 }
 
+// example-start: 2 {0|all}
 fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWindow>>) {
     let mut primary_window = windows.single_mut();
     primary_window.cursor_options.visible = false;
@@ -149,12 +154,17 @@ fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWin
             ..OrthographicProjection::default_2d()
         }),
     ));
+    // --> moved to `setup_game`
 }
+// example-end: 2
 
+// example-start: 3 {0|all}
 fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.queue(SpawnWall {
         location: WallLocation::Top,
     });
+    // ...
+    // example-end: 3
     commands.queue(SpawnWall {
         location: WallLocation::Bottom,
     });
@@ -345,6 +355,7 @@ fn play_sounds(
     }
 }
 
+// example-start: 4 {0|1|2|4-8|10-14|all}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
 
@@ -360,11 +371,15 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
         TextLayout::new_with_justify(JustifyText::Center),
     ));
 }
+// example-end: 4
 
+// example-start: 5 {0|1|2|all}
 fn start_game(mut game_state: ResMut<NextState<GameState>>) {
     game_state.set(GameState::Game);
 }
+// example-end: 5
 
+// example-start: 6 {26|5|6|7|8-13|23|5-13,23,26}
 fn main() {
     let mut app = App::new();
 
@@ -393,3 +408,4 @@ fn main() {
         .init_state::<GameState>()
         .run();
 }
+// example-end: 6

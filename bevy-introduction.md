@@ -1148,6 +1148,133 @@ Input (5/5)
 just run 022-add_bat
 ```
 
+Game states (1/5)
+=================
+
+<!-- include-code: examples/023-add_title/main.rs§1 -->
+```rust +line_numbers {0|2|4-5|1|3|all}
+#[derive(Clone, Copy, Default, Eq, PartialEq, Debug, Hash, States)]
+pub enum GameState {
+    #[default]
+    Title,
+    Game,
+}
+```
+
+Game states (2/5)
+=================
+
+<!-- include-code: examples/023-add_title/main.rs§2 -->
+```rust +line_numbers {0|all}
+fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWindow>>) {
+    let mut primary_window = windows.single_mut();
+    primary_window.cursor_options.visible = false;
+
+    commands.spawn((
+        Camera2d,
+        Projection::Orthographic(OrthographicProjection {
+            scaling_mode: ScalingMode::AutoMin {
+                min_width: MAX_X,
+                min_height: MAX_Y,
+            },
+            ..OrthographicProjection::default_2d()
+        }),
+    ));
+    // --> moved to `setup_game`
+}
+```
+
+<!-- include-code: examples/023-add_title/main.rs§3 -->
+```rust +line_numbers {0|all}
+fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
+    commands.queue(SpawnWall {
+        location: WallLocation::Top,
+    });
+    // ...
+```
+
+Game states (3/5)
+=================
+
+<!-- include-code: examples/023-add_title/main.rs§4 -->
+```rust +line_numbers {0|1|2|4-8|10-14|all}
+fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
+
+    let text_font = TextFont {
+        font: font.clone(),
+        font_size: 128.0,
+        ..default()
+    };
+
+    commands.spawn((
+        Text2d::new("Breakout"),
+        text_font.clone(),
+        TextLayout::new_with_justify(JustifyText::Center),
+    ));
+}
+```
+
+<!-- include-code: examples/023-add_title/main.rs§5 -->
+```rust +line_numbers {0|1|2|all}
+fn start_game(mut game_state: ResMut<NextState<GameState>>) {
+    game_state.set(GameState::Game);
+}
+```
+
+Game states (4/5)
+=================
+
+<!-- include-code: examples/023-add_title/main.rs§6 -->
+```rust +line_numbers {26|5|6|7|8-13|23|5-13,23,26}
+fn main() {
+    let mut app = App::new();
+
+    app.add_plugins(DefaultPlugins)
+        .add_systems(Startup, setup)
+        .add_systems(OnEnter(GameState::Title), setup_title)
+        .add_systems(OnEnter(GameState::Game), setup_game)
+        .add_systems(
+            Update,
+            (start_game)
+                .run_if(in_state(GameState::Title))
+                .run_if(input_just_pressed(KeyCode::Enter)),
+        )
+        .add_systems(
+            Update,
+            (
+                apply_velocity,
+                check_for_collisions,
+                despawn_stones,
+                move_bat,
+                play_sounds,
+            )
+                .run_if(in_state(GameState::Game)),
+        )
+        .add_event::<CollisionEvent>()
+        .init_state::<GameState>()
+        .run();
+}
+```
+
+Game states (5/5)
+=================
+
+<!-- include-code: examples/023-add_title/main.rs§7 -->
+```rust +line_numbers {0|2}
+use bevy::{
+    input::{common_conditions::input_just_pressed, mouse::MouseMotion},
+    math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
+    prelude::*,
+    render::camera::ScalingMode,
+    window::PrimaryWindow,
+};
+```
+
+```sh +exec
+just run 023-add_title
+```
+
 Caveats and things to keep in mind
 ==================================
 

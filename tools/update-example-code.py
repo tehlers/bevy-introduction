@@ -8,7 +8,7 @@ INCLUDE_PATTERN = re.compile('<!-- include-code: (.*)§(\\d+) -->')
 
 def load_example_code(filename, example_number):
     start_pattern = re.compile(' *// example-start: %s$| *// example-start: %s ({.*})' % (example_number, example_number))
-    end_pattern = re.compile(' *// example-end: %s$' % example_number)
+    end_pattern = re.compile(' *// example-end: %s' % example_number)
 
     content = []
     with open(filename, 'r') as file:
