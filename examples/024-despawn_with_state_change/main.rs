@@ -53,11 +53,13 @@ struct CollisionEvent {
     obstacle: Obstacle,
 }
 
+// example-start: 1 {0|1-2|all}
 #[derive(Component)]
 struct OnTitleScreen;
 
 #[derive(Component)]
 struct OnGameScreen;
+// example-end: 1
 
 #[derive(Component)]
 struct Despawning(Timer);
@@ -91,6 +93,7 @@ struct SpawnWall {
     location: WallLocation,
 }
 
+// example-start: 3 {0|10}
 impl Command for SpawnWall {
     fn apply(self, world: &mut World) {
         world.spawn((
@@ -104,6 +107,7 @@ impl Command for SpawnWall {
         ));
     }
 }
+// example-end: 3
 
 struct SpawnStone {
     x: f32,
@@ -123,6 +127,7 @@ impl Command for SpawnStone {
         let texture_atlas_layout = texture_atlas_layouts.unwrap().add(layout);
 
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
+            // example-start: 4 {0|15}
             world.spawn((
                 Sprite::from_atlas_image(
                     asset_server.load("sprites/stone-animated.png"),
@@ -139,6 +144,7 @@ impl Command for SpawnStone {
                 Stone,
                 OnGameScreen,
             ));
+            // example-end: 4
         }
     }
 }
@@ -173,6 +179,7 @@ fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
         location: WallLocation::Right,
     });
 
+    // example-start: 5 {0|11|11,22}
     commands.spawn((
         Sprite::from_image(asset_server.load("sprites/ball.png")),
         Transform::from_xyz(
@@ -196,6 +203,7 @@ fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
         Bat,
         OnGameScreen,
     ));
+    // example-end: 5
 
     for x in (((-MAX_X / 2.0 + WALL_THICKNESS / 2.0 + MARGIN + STONE_SIZE.x / 2.0 + 3.0) as i32)
         ..(MAX_X / 2.0) as i32)
@@ -355,6 +363,7 @@ fn play_sounds(
     }
 }
 
+// example-start: 2 {0|14}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
 
@@ -371,26 +380,31 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
         OnTitleScreen,
     ));
 }
+// example-end: 2
 
 fn start_game(mut game_state: ResMut<NextState<GameState>>) {
     game_state.set(GameState::Game);
 }
 
+// example-start: 6 {0|1|2|3|all}
 fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
     for entity in &to_despawn {
         commands.entity(entity).despawn_recursive();
     }
 }
+// example-end: 6
 
 fn main() {
     let mut app = App::new();
 
     app.add_plugins(DefaultPlugins)
+        // example-start: 7 {0|3|3,5}
         .add_systems(Startup, setup)
         .add_systems(OnEnter(GameState::Title), setup_title)
         .add_systems(OnExit(GameState::Title), despawn_screen::<OnTitleScreen>)
         .add_systems(OnEnter(GameState::Game), setup_game)
         .add_systems(OnExit(GameState::Game), despawn_screen::<OnGameScreen>)
+        // example-end: 7
         .add_systems(
             Update,
             (start_game)

@@ -1275,6 +1275,139 @@ use bevy::{
 just run 023-add_title
 ```
 
+Despawn on game state changes (1/6)
+===================================
+
+<!-- include-code: examples/024-despawn_with_state_change/main.rs§1 -->
+```rust +line_numbers {0|1-2|all}
+#[derive(Component)]
+struct OnTitleScreen;
+
+#[derive(Component)]
+struct OnGameScreen;
+```
+
+Despawn on game state changes (2/6)
+===================================
+
+<!-- include-code: examples/024-despawn_with_state_change/main.rs§2 -->
+```rust +line_numbers {0|14}
+fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
+
+    let text_font = TextFont {
+        font: font.clone(),
+        font_size: 128.0,
+        ..default()
+    };
+
+    commands.spawn((
+        Text2d::new("Breakout"),
+        text_font.clone(),
+        TextLayout::new_with_justify(JustifyText::Center),
+        OnTitleScreen,
+    ));
+}
+```
+
+Despawn on game state changes (3/6)
+===================================
+
+<!-- include-code: examples/024-despawn_with_state_change/main.rs§3 -->
+```rust +line_numbers {0|10}
+impl Command for SpawnWall {
+    fn apply(self, world: &mut World) {
+        world.spawn((
+            Sprite::from_color(Color::WHITE, Vec2::ONE),
+            Transform::from_translation(self.location.position()).with_scale(self.location.size()),
+            Collider {
+                size: None,
+                obstacle: Obstacle::Wall,
+            },
+            OnGameScreen,
+        ));
+    }
+}
+```
+
+Despawn on game state changes (4/6)
+===================================
+
+<!-- include-code: examples/024-despawn_with_state_change/main.rs§4 -->
+```rust +line_numbers {0|15}
+            world.spawn((
+                Sprite::from_atlas_image(
+                    asset_server.load("sprites/stone-animated.png"),
+                    TextureAtlas {
+                        layout: texture_atlas_layout,
+                        index: 0,
+                    },
+                ),
+                Transform::from_xyz(self.x, self.y, 0.0),
+                Collider {
+                    size: Some(STONE_SIZE),
+                    obstacle: Obstacle::Stone,
+                },
+                Stone,
+                OnGameScreen,
+            ));
+```
+
+Despawn on game state changes (5/6)
+===================================
+
+<!-- include-code: examples/024-despawn_with_state_change/main.rs§5 -->
+```rust +line_numbers {0|11|11,22}
+    commands.spawn((
+        Sprite::from_image(asset_server.load("sprites/ball.png")),
+        Transform::from_xyz(
+            0.0,
+            -MAX_Y / 2.0 + WALL_THICKNESS + MARGIN + BALL_RADIUS * 2.0,
+            0.0,
+        ),
+        Ball {
+            velocity: Vec2::new(0.5, 0.5).normalize() * BALL_SPEED,
+        },
+        OnGameScreen,
+    ));
+
+    commands.spawn((
+        Sprite::from_image(asset_server.load("sprites/bat.png")),
+        Transform::from_xyz(0.0, -MAX_Y / 2.0 + WALL_THICKNESS + MARGIN, 0.0),
+        Collider {
+            size: Some(BAT_SIZE),
+            obstacle: Obstacle::Bat,
+        },
+        Bat,
+        OnGameScreen,
+    ));
+```
+
+Despawn on game state changes (6/6)
+===================================
+
+<!-- include-code: examples/024-despawn_with_state_change/main.rs§6 -->
+```rust +line_numbers {0|1|2|3|all}
+fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
+    for entity in &to_despawn {
+        commands.entity(entity).despawn_recursive();
+    }
+}
+```
+
+<!-- include-code: examples/024-despawn_with_state_change/main.rs§7 -->
+```rust +line_numbers {0|3|3,5}
+        .add_systems(Startup, setup)
+        .add_systems(OnEnter(GameState::Title), setup_title)
+        .add_systems(OnExit(GameState::Title), despawn_screen::<OnTitleScreen>)
+        .add_systems(OnEnter(GameState::Game), setup_game)
+        .add_systems(OnExit(GameState::Game), despawn_screen::<OnGameScreen>)
+```
+
+```sh +exec
+just run 024-despawn_with_state_change
+```
+
 Caveats and things to keep in mind
 ==================================
 
