@@ -1007,7 +1007,7 @@ Events and sounds (5/5)
 =======================
 
 <!-- include-code: examples/021-add_sounds/main.rs§6 -->
-```rust +line_numbers {0|7|all}
+```rust +line_numbers {0|7|10|all}
         .add_systems(
             Update,
             (
@@ -1017,10 +1017,135 @@ Events and sounds (5/5)
                 play_sounds,
             ),
         )
+        .add_event::<CollisionEvent>()
 ```
 
 ```sh +exec
 just run 021-add_sounds
+```
+
+Input (1/5)
+===========
+
+<!-- include-code: examples/022-add_bat/main.rs§1 -->
+```rust +line_numbers {1-2|6|1-2,6}
+#[derive(Component)]
+struct Bat;
+
+#[derive(Clone, Copy)]
+enum Obstacle {
+    Bat,
+    Stone,
+    Wall,
+}
+```
+
+<!-- include-code: examples/022-add_bat/main.rs§2 -->
+```rust +line_numbers {0|all}
+const BAT_SIZE: Vec2 = Vec2::new(124.0, 28.0);
+```
+
+<!-- include-code: examples/022-add_bat/main.rs§3 -->
+```rust +line_numbers {0|2|3|4-6|8|all}
+    commands.spawn((
+        Sprite::from_image(asset_server.load("sprites/bat.png")),
+        Transform::from_xyz(0.0, -MAX_Y / 2.0 + WALL_THICKNESS + MARGIN, 0.0),
+        Collider {
+            size: Some(BAT_SIZE),
+            obstacle: Obstacle::Bat,
+        },
+        Bat,
+    ));
+```
+
+Input (2/5)
+===========
+
+<!-- include-code: examples/022-add_bat/main.rs§4 -->
+```rust +line_numbers
+            Obstacle::Bat => commands.spawn((
+                AudioPlayer::new(asset_server.load("sounds/bat.ogg")),
+                PlaybackSettings::DESPAWN,
+            )),
+```
+
+Input (3/5)
+===========
+
+<!-- include-code: examples/022-add_bat/main.rs§5 -->
+```rust +line_numbers {0|2}
+use bevy::{
+    input::mouse::MouseMotion,
+    math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
+    prelude::*,
+    render::camera::ScalingMode,
+    window::PrimaryWindow,
+};
+```
+
+<!-- include-code: examples/022-add_bat/main.rs§6 -->
+```rust +line_numbers {0|2-3}
+const BAT_SIZE: Vec2 = Vec2::new(124.0, 28.0);
+const BAT_LEFT_BORDER: f32 = -(MAX_X / 2.0) + WALL_THICKNESS + BAT_SIZE.x / 2.0;
+const BAT_RIGHT_BORDER: f32 = -BAT_LEFT_BORDER;
+```
+
+<!-- include-code: examples/022-add_bat/main.rs§7 -->
+```rust +line_numbers {0|1|2|3-6|all}
+fn move_bat(mut motion: EventReader<MouseMotion>, mut bat_query: Query<&mut Transform, With<Bat>>) {
+    for event in motion.read() {
+        for mut bat in &mut bat_query {
+            bat.translation.x += event.delta.x * 2.0;
+            bat.translation.x = bat.translation.x.clamp(BAT_LEFT_BORDER, BAT_RIGHT_BORDER);
+        }
+    }
+}
+```
+
+Input (4/5)
+===========
+
+<!-- include-code: examples/022-add_bat/main.rs§8 -->
+```rust +line_numbers {0|7}
+        .add_systems(
+            Update,
+            (
+                apply_velocity,
+                check_for_collisions,
+                despawn_stones,
+                move_bat,
+                play_sounds,
+            ),
+        )
+```
+
+<!-- include-code: examples/022-add_bat/main.rs§9 -->
+```rust +line_numbers {0|6}
+use bevy::{
+    input::mouse::MouseMotion,
+    math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
+    prelude::*,
+    render::camera::ScalingMode,
+    window::PrimaryWindow,
+};
+```
+
+<!-- include-code: examples/022-add_bat/main.rs§10 -->
+```rust +line_numbers {0|4|6-7|4,6-7}
+fn setup(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut windows: Query<&mut Window, With<PrimaryWindow>>,
+) {
+    let mut primary_window = windows.single_mut();
+    primary_window.cursor_options.visible = false;
+```
+
+Input (5/5)
+===========
+
+```sh +exec
+just run 022-add_bat
 ```
 
 Caveats and things to keep in mind

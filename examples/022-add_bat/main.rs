@@ -1,3 +1,5 @@
+// example-start: 5 {0|2}
+// example-start: 9 {0|6}
 use bevy::{
     input::mouse::MouseMotion,
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
@@ -5,6 +7,8 @@ use bevy::{
     render::camera::ScalingMode,
     window::PrimaryWindow,
 };
+// example-end: 5
+// example-end: 9
 
 const MAX_X: f32 = 1920.0;
 const MAX_Y: f32 = 1200.0;
@@ -13,15 +17,20 @@ const BALL_RADIUS: f32 = 12.0;
 const BALL_SPEED: f32 = 600.0;
 const MARGIN: f32 = 12.0;
 const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
+// example-start: 2 {0|all}
+// example-start: 6 {0|2-3}
 const BAT_SIZE: Vec2 = Vec2::new(124.0, 28.0);
+// example-end: 2
 const BAT_LEFT_BORDER: f32 = -(MAX_X / 2.0) + WALL_THICKNESS + BAT_SIZE.x / 2.0;
 const BAT_RIGHT_BORDER: f32 = -BAT_LEFT_BORDER;
+// example-end: 6
 
 #[derive(Component)]
 struct Ball {
     velocity: Vec2,
 }
 
+// example-start: 1 {1-2|6|1-2,6}
 #[derive(Component)]
 struct Bat;
 
@@ -31,6 +40,7 @@ enum Obstacle {
     Stone,
     Wall,
 }
+// example-end: 1
 
 #[derive(Component)]
 struct Collider {
@@ -128,6 +138,7 @@ impl Command for SpawnStone {
     }
 }
 
+// example-start: 10 {0|4|6-7|4,6-7}
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -135,6 +146,7 @@ fn setup(
 ) {
     let mut primary_window = windows.single_mut();
     primary_window.cursor_options.visible = false;
+    // example-end: 10
 
     commands.spawn((
         Camera2d,
@@ -172,6 +184,7 @@ fn setup(
         },
     ));
 
+    // example-start: 3 {0|2|3|4-6|8|all}
     commands.spawn((
         Sprite::from_image(asset_server.load("sprites/bat.png")),
         Transform::from_xyz(0.0, -MAX_Y / 2.0 + WALL_THICKNESS + MARGIN, 0.0),
@@ -181,6 +194,7 @@ fn setup(
         },
         Bat,
     ));
+    // example-end: 3
 
     for x in (((-MAX_X / 2.0 + WALL_THICKNESS / 2.0 + MARGIN + STONE_SIZE.x / 2.0 + 3.0) as i32)
         ..(MAX_X / 2.0) as i32)
@@ -258,6 +272,7 @@ fn check_for_collisions(
     }
 }
 
+// example-start: 7 {0|1|2|3-6|all}
 fn move_bat(mut motion: EventReader<MouseMotion>, mut bat_query: Query<&mut Transform, With<Bat>>) {
     for event in motion.read() {
         for mut bat in &mut bat_query {
@@ -266,6 +281,7 @@ fn move_bat(mut motion: EventReader<MouseMotion>, mut bat_query: Query<&mut Tran
         }
     }
 }
+// example-end: 7
 
 enum Collision {
     Left,
@@ -324,10 +340,12 @@ fn play_sounds(
 ) {
     for event in collision_events.read() {
         match event.obstacle {
+            // example-start: 4
             Obstacle::Bat => commands.spawn((
                 AudioPlayer::new(asset_server.load("sounds/bat.ogg")),
                 PlaybackSettings::DESPAWN,
             )),
+            // example-end: 4
             Obstacle::Stone => commands.spawn((
                 AudioPlayer::new(asset_server.load("sounds/stone.ogg")),
                 PlaybackSettings::DESPAWN,
@@ -345,6 +363,7 @@ fn main() {
 
     app.add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
+        // example-start: 8 {0|7}
         .add_systems(
             Update,
             (
@@ -355,6 +374,7 @@ fn main() {
                 play_sounds,
             ),
         )
+        // example-end: 8
         .add_event::<CollisionEvent>()
         .run();
 }

@@ -312,7 +312,7 @@ fn main() {
 
     app.add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
-        // example-start: 6 {0|7|all}
+        // example-start: 6 {0|7|10|all}
         .add_systems(
             Update,
             (
@@ -322,7 +322,7 @@ fn main() {
                 play_sounds,
             ),
         )
-        // example-end: 6
         .add_event::<CollisionEvent>()
+        // example-end: 6
         .run();
 }
