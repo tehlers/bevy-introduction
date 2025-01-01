@@ -1521,6 +1521,106 @@ fn check_for_game_over(
 just run 025-remove_bottom_wall
 ```
 
+Resources (1/4)
+===============
+
+<!-- include-code: examples/026-add_score/main.rs§1 -->
+```rust +line_numbers {0|1|2|all}
+#[derive(Default, Resource)]
+struct Score(u64);
+```
+
+<!-- include-code: examples/026-add_score/main.rs§2 -->
+```rust +line_numbers {0|1|2|3|4|all}
+fn handle_score(mut collision_events: EventReader<CollisionEvent>, mut score: ResMut<Score>) {
+    for event in collision_events.read() {
+        if let Obstacle::Stone = event.obstacle {
+            score.0 += 100;
+        }
+    }
+}
+```
+
+Resources (2/4)
+===============
+
+<!-- include-code: examples/026-add_score/main.rs§3 -->
+```rust +line_numbers {0|8|8,16}
+        .add_systems(
+            Update,
+            (
+                apply_velocity,
+                check_for_collisions,
+                check_for_game_over,
+                despawn_stones,
+                handle_score,
+                move_bat,
+                play_sounds,
+            )
+                .run_if(in_state(GameState::Game)),
+        )
+        .add_event::<CollisionEvent>()
+        .init_state::<GameState>()
+        .init_resource::<Score>()
+        .run();
+```
+
+Resources (3/4)
+===============
+
+<!-- include-code: examples/026-add_score/main.rs§4 -->
+```rust +line_numbers {0|1|1,17-21|1,17-21,23-29|1,17-21,23-29,31-33}
+fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Res<Score>) {
+    let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
+
+    let title_font = TextFont {
+        font: font.clone(),
+        font_size: 128.0,
+        ..default()
+    };
+
+    commands.spawn((
+        Text2d::new("Breakout"),
+        title_font.clone(),
+        TextLayout::new_with_justify(JustifyText::Center),
+        OnTitleScreen,
+    ));
+
+    let score_font = TextFont {
+        font: font.clone(),
+        font_size: 64.0,
+        ..default()
+    };
+
+    let mut score_text = commands.spawn((
+        Text2d::new(format!("Last score: {}", score.0)),
+        score_font.clone(),
+        TextLayout::new_with_justify(JustifyText::Center),
+        Transform::from_xyz(0.0, -256.0, 0.0),
+        OnTitleScreen,
+    ));
+
+    if score.0 == 0 {
+        score_text.insert(Visibility::Hidden);
+    }
+}
+```
+
+Resources (4/4)
+===============
+
+<!-- include-code: examples/026-add_score/main.rs§5 -->
+```rust +line_numbers {0|1|2|all}
+fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>, mut score: ResMut<Score>) {
+    score.0 = 0;
+    // ...
+```
+
+<!-- cmd:pause -->
+```sh +exec
+just run 026-add_score
+```
+
 Caveats and things to keep in mind
 ==================================
 

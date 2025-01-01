@@ -59,8 +59,10 @@ struct OnTitleScreen;
 #[derive(Component)]
 struct OnGameScreen;
 
+// example-start: 1 {0|1|2|all}
 #[derive(Default, Resource)]
 struct Score(u64);
+// example-end: 1
 
 #[derive(Component)]
 struct Despawning(Timer);
@@ -160,8 +162,11 @@ fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWin
     ));
 }
 
+// example-start: 5 {0|1|2|all}
 fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>, mut score: ResMut<Score>) {
     score.0 = 0;
+    // ...
+    // example-end: 5
 
     commands.queue(SpawnWall {
         location: WallLocation::Top,
@@ -355,6 +360,7 @@ fn play_sounds(
     }
 }
 
+// example-start: 2 {0|1|2|3|4|all}
 fn handle_score(mut collision_events: EventReader<CollisionEvent>, mut score: ResMut<Score>) {
     for event in collision_events.read() {
         if let Obstacle::Stone = event.obstacle {
@@ -362,6 +368,7 @@ fn handle_score(mut collision_events: EventReader<CollisionEvent>, mut score: Re
         }
     }
 }
+// example-end: 2
 
 fn check_for_game_over(
     balls: Query<&Transform, With<Ball>>,
@@ -374,6 +381,7 @@ fn check_for_game_over(
     }
 }
 
+// example-start: 4 {0|1|1,17-21|1,17-21,23-29|1,17-21,23-29,31-33}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Res<Score>) {
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
 
@@ -408,6 +416,7 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
         score_text.insert(Visibility::Hidden);
     }
 }
+// example-end: 4
 
 fn start_game(mut game_state: ResMut<NextState<GameState>>) {
     game_state.set(GameState::Game);
@@ -434,6 +443,7 @@ fn main() {
                 .run_if(in_state(GameState::Title))
                 .run_if(input_just_pressed(KeyCode::Enter)),
         )
+        // example-start: 3 {0|8|8,16}
         .add_systems(
             Update,
             (
@@ -451,4 +461,5 @@ fn main() {
         .init_state::<GameState>()
         .init_resource::<Score>()
         .run();
+        // example-end: 3
 }
