@@ -62,8 +62,10 @@ struct OnGameScreen;
 #[derive(Component)]
 struct Despawning(Timer);
 
+// example-start: 1 {0|2-5|2-5,11-14|2-5,11-14,19-23}
 enum WallLocation {
     Top,
+    // Bottom,
     Left,
     Right,
 }
@@ -72,6 +74,7 @@ impl WallLocation {
     fn position(&self) -> Vec3 {
         match self {
             WallLocation::Top => Vec3::new(0.0, MAX_Y / 2.0, 0.0),
+            // WallLocation::Bottom => Vec3::new(0.0, -MAX_Y / 2.0, 0.0),
             WallLocation::Left => Vec3::new(-MAX_X / 2.0, 0.0, 0.0),
             WallLocation::Right => Vec3::new(MAX_X / 2.0, 0.0, 0.0),
         }
@@ -79,11 +82,13 @@ impl WallLocation {
 
     fn size(&self) -> Vec3 {
         match self {
+            /* WallLocation::Bottom | */
             WallLocation::Top => Vec3::new(MAX_X, WALL_THICKNESS, 0.0),
             WallLocation::Left | WallLocation::Right => Vec3::new(WALL_THICKNESS, MAX_Y, 0.0),
         }
     }
 }
+// example-end: 1
 
 struct SpawnWall {
     location: WallLocation,
@@ -158,15 +163,22 @@ fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWin
 }
 
 fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>) {
+    // example-start: 2 {0|all}
     commands.queue(SpawnWall {
         location: WallLocation::Top,
     });
+    /*
+    commands.queue(SpawnWall {
+        location: WallLocation::Top,
+    });
+    */
     commands.queue(SpawnWall {
         location: WallLocation::Left,
     });
     commands.queue(SpawnWall {
         location: WallLocation::Right,
     });
+    // example-end: 2
 
     commands.spawn((
         Sprite::from_image(asset_server.load("sprites/ball.png")),
@@ -350,6 +362,7 @@ fn play_sounds(
     }
 }
 
+// example-start: 3 {0|1-4|6|7|all}
 fn check_for_game_over(
     balls: Query<&Transform, With<Ball>>,
     mut game_state: ResMut<NextState<GameState>>,
@@ -360,6 +373,7 @@ fn check_for_game_over(
         }
     }
 }
+// example-end: 3
 
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
@@ -403,6 +417,7 @@ fn main() {
                 .run_if(in_state(GameState::Title))
                 .run_if(input_just_pressed(KeyCode::Enter)),
         )
+        // example-start: 4 {0|6}
         .add_systems(
             Update,
             (
@@ -415,6 +430,7 @@ fn main() {
             )
                 .run_if(in_state(GameState::Game)),
         )
+        // example-end: 4
         .add_event::<CollisionEvent>()
         .init_state::<GameState>()
         .run();

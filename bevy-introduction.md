@@ -1408,6 +1408,96 @@ fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands
 just run 024-despawn_with_state_change
 ```
 
+Game over (1/3)
+===============
+
+<!-- include-code: examples/025-remove_bottom_wall/main.rs§1 -->
+```rust +line_numbers {0|2-5|2-5,11-14|2-5,11-14,19-23}
+enum WallLocation {
+    Top,
+    // Bottom,
+    Left,
+    Right,
+}
+
+impl WallLocation {
+    fn position(&self) -> Vec3 {
+        match self {
+            WallLocation::Top => Vec3::new(0.0, MAX_Y / 2.0, 0.0),
+            // WallLocation::Bottom => Vec3::new(0.0, -MAX_Y / 2.0, 0.0),
+            WallLocation::Left => Vec3::new(-MAX_X / 2.0, 0.0, 0.0),
+            WallLocation::Right => Vec3::new(MAX_X / 2.0, 0.0, 0.0),
+        }
+    }
+
+    fn size(&self) -> Vec3 {
+        match self {
+            /* WallLocation::Bottom | */
+            WallLocation::Top => Vec3::new(MAX_X, WALL_THICKNESS, 0.0),
+            WallLocation::Left | WallLocation::Right => Vec3::new(WALL_THICKNESS, MAX_Y, 0.0),
+        }
+    }
+}
+```
+
+Game over (2/3)
+===============
+
+<!-- include-code: examples/025-remove_bottom_wall/main.rs§2 -->
+```rust +line_numbers {0|all}
+    commands.queue(SpawnWall {
+        location: WallLocation::Top,
+    });
+    /*
+    commands.queue(SpawnWall {
+        location: WallLocation::Top,
+    });
+    */
+    commands.queue(SpawnWall {
+        location: WallLocation::Left,
+    });
+    commands.queue(SpawnWall {
+        location: WallLocation::Right,
+    });
+```
+
+Game over (3/3)
+===============
+
+<!-- include-code: examples/025-remove_bottom_wall/main.rs§3 -->
+```rust +line_numbers {0|1-4|6|7|all}
+fn check_for_game_over(
+    balls: Query<&Transform, With<Ball>>,
+    mut game_state: ResMut<NextState<GameState>>,
+) {
+    for ball in &balls {
+        if ball.translation.y < -MAX_Y / 2.0 {
+            game_state.set(GameState::Title);
+        }
+    }
+}
+```
+
+<!-- include-code: examples/025-remove_bottom_wall/main.rs§4 -->
+```rust +line_numbers {0|6}
+        .add_systems(
+            Update,
+            (
+                apply_velocity,
+                check_for_collisions,
+                check_for_game_over,
+                despawn_stones,
+                move_bat,
+                play_sounds,
+            )
+                .run_if(in_state(GameState::Game)),
+        )
+```
+
+```sh +exec
+just run 025-remove_bottom_wall
+```
+
 Caveats and things to keep in mind
 ==================================
 
