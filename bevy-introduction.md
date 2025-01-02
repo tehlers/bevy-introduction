@@ -11,6 +11,10 @@ options:
 What is Bevy?
 =============
 
+<!-- cmd: column_layout: [3, 1] -->
+
+<!-- cmd: column: 0 -->
+
 In their own words:
 
 > A refreshingly simple data-driven game engine built in Rust
@@ -25,6 +29,11 @@ In their own words:
 * Built in Rust
 * Cross-platform with support for Linux, MacOS, Windows, iOS and Android
 * Active community with new releases roughly every 3-6 months
+
+<!-- cmd: column: 1 -->
+
+![](assets/images/bevy_bird_dark.png)
+![](assets/images/rust_logo.png)
 
 Getting started...
 ==================
