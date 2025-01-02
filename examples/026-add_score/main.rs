@@ -162,11 +162,11 @@ fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWin
     ));
 }
 
-// example-start: 5 {0|1|2|all}
+// example-start: 6 {0|1|2|all}
 fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>, mut score: ResMut<Score>) {
     score.0 = 0;
     // ...
-    // example-end: 5
+    // example-end: 6
 
     commands.queue(SpawnWall {
         location: WallLocation::Top,
@@ -381,8 +381,9 @@ fn check_for_game_over(
     }
 }
 
-// example-start: 4 {0|1|1,17-21|1,17-21,23-29|1,17-21,23-29,31-33}
+// example-start: 4 {0|1}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Res<Score>) {
+    // example-end: 4
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
 
     let title_font = TextFont {
@@ -398,6 +399,7 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
         OnTitleScreen,
     ));
 
+    // example-start: 5 {0|1-5|1-13|all}
     let score_font = TextFont {
         font: font.clone(),
         font_size: 64.0,
@@ -415,8 +417,8 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
     if score.0 == 0 {
         score_text.insert(Visibility::Hidden);
     }
+    // example-end: 5
 }
-// example-end: 4
 
 fn start_game(mut game_state: ResMut<NextState<GameState>>) {
     game_state.set(GameState::Game);

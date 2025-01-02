@@ -1594,23 +1594,12 @@ Resources (3/4)
 ===============
 
 <!-- include-code: examples/026-add_score/main.rs§4 -->
-```rust +line_numbers {0|1|1,17-21|1,17-21,23-29|1,17-21,23-29,31-33}
+```rust +line_numbers {0|1}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Res<Score>) {
-    let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
+```
 
-    let title_font = TextFont {
-        font: font.clone(),
-        font_size: 128.0,
-        ..default()
-    };
-
-    commands.spawn((
-        Text2d::new("Breakout"),
-        title_font.clone(),
-        TextLayout::new_with_justify(JustifyText::Center),
-        OnTitleScreen,
-    ));
-
+<!-- include-code: examples/026-add_score/main.rs§5 -->
+```rust +line_numbers {0|1-5|1-13|all}
     let score_font = TextFont {
         font: font.clone(),
         font_size: 64.0,
@@ -1628,13 +1617,12 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
     if score.0 == 0 {
         score_text.insert(Visibility::Hidden);
     }
-}
 ```
 
 Resources (4/4)
 ===============
 
-<!-- include-code: examples/026-add_score/main.rs§5 -->
+<!-- include-code: examples/026-add_score/main.rs§6 -->
 ```rust +line_numbers {0|1|2|all}
 fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>, mut score: ResMut<Score>) {
     score.0 = 0;
