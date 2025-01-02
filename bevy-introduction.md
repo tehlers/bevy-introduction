@@ -141,6 +141,48 @@ fn main() {
 cargo run --example 002-bevy_app
 ```
 
+Entity Component System
+=======================
+
+<!-- cmd: column_layout: [1, 1, 1] -->
+
+<!-- cmd:pause -->
+<!-- cmd: column: 0 -->
+# Entity
+
+All "things" in a game are **entities**. e.g.
+* the player
+* enemies
+* potions
+* ...
+
+At its core, it is an ID that is managed by Bevy.
+
+<!-- cmd:pause -->
+<!-- cmd: column: 1 -->
+# Component
+
+Each **entity** can have several **components** that define its properties, characteristics and capabilities. e.g.
+
+* hitpoints
+* position
+* speed
+* ...
+
+<!-- cmd:pause -->
+<!-- cmd: column: 2 -->
+# System
+
+The actual game logic is implemented in functions that are called **systems**. They are defined for a specific group of **component** types. e.g.
+
+* change position of entities with speed
+* ...
+
+<!-- cmd:pause -->
+<!-- cmd: reset_layout -->
+
+> The ECS pattern encourages clean, decoupled designs by forcing you to break up your app data and logic into its core components. It also helps make your code faster by optimizing memory access patterns and making parallelism easier.
+
 Systems
 =======
 
