@@ -11,7 +11,20 @@ options:
 What is Bevy?
 =============
 
-# Facts about Bevy
+In their own words:
+
+> A refreshingly simple data-driven game engine built in Rust
+> Free and Open Source Forever!
+
+* Work started in November 2019
+* First public release in September 2020
+* 37.000 stars on GitHub
+* ECS architecture (Entity Component System)
+* Focus on a simple data-oriented design
+* Support for 2D and 3D games
+* Built in Rust
+* Cross-platform with support for Linux, MacOS, Windows, iOS and Android
+* Active community with new releases roughly every 3-6 months
 
 Getting started...
 ==================
