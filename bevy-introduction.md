@@ -35,13 +35,21 @@ In their own words:
 
 <!-- cmd: column: 1 -->
 
-![](assets/images/bevy_bird_dark.png)
-![](assets/images/rust_logo.png)
+![Bevy logo](assets/images/bevy_bird_dark.png)
+![Rust logo](assets/images/rust_logo.png)
 
 Getting started...
 ==================
 
-# How to install Rust
+# Installing the Rust toolchain
+
+The Rust toolchain is installed with [Rustup](https://rustup.rs/). Either install it with the package manager of your distribution or download the installations script. **Always check the downloaded code and do not blindly pipe it to `sh`.**
+
+# Important tools
+
+* `rustc` - the Rust compiler
+* `cargo` - build tool and package manager
+* `rust-analyzer` - LSP implementation for Rust
 
 <!-- cmd:end_slide -->
 
@@ -53,16 +61,42 @@ The basics
 Hello world
 ===========
 
+<!-- cmd: column_layout: [1, 1] -->
+
+<!-- cmd: column: 0 -->
+
+# Creating a new Rust project
+
+```sh +exec
+NEW_PROJECT=$(mktemp -d)
+cd "$NEW_PROJECT"
+cargo init hello_world
+cd hello_world
+cargo run
+```
+
+<!-- cmd: column: 1 -->
+
+<!-- cmd:pause -->
+
+# Cargo.toml
+
+```toml +line_numbers
+[package]
+name = "hello_world"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+```
+
+# src/main.rs
+
 <!-- include-code: examples/001-hello_world/main.rs§1 -->
 ```rust +line_numbers
 fn main() {
     println!("Hello, world!");
 }
-```
-
-<!-- cmd:pause -->
-```sh +exec
-cargo run --example 001-hello_world
 ```
 
 Simple Bevy app
