@@ -388,6 +388,9 @@ just run 010-bevy_default_plugins
 Sprites
 =======
 
+<!-- cmd: column_layout: [3, 1] -->
+
+<!-- cmd: column: 0 -->
 <!-- include-code: examples/011-sprite/main.rs§1 -->
 ```rust +line_numbers {1|2|3|10|all}
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -404,7 +407,13 @@ fn main() {
 }
 ```
 
+<!-- cmd: column: 1 -->
+
+## assets/sprites/ball.png
+![ball sprite](assets/sprites/ball.png)
+
 <!-- cmd:pause -->
+<!-- cmd:reset_layout -->
 ```sh +exec
 just run 011-sprite
 ```
