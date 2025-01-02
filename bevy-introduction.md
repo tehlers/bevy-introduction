@@ -79,7 +79,7 @@ cargo run
 
 <!-- cmd:pause -->
 
-# Cargo.toml
+## Cargo.toml
 
 ```toml +line_numbers
 [package]
@@ -90,7 +90,9 @@ edition = "2021"
 [dependencies]
 ```
 
-# src/main.rs
+<!-- cmd:pause -->
+
+## src/main.rs
 
 <!-- include-code: examples/001-hello_world/main.rs§1 -->
 ```rust +line_numbers
@@ -102,14 +104,37 @@ fn main() {
 Simple Bevy app
 ===============
 
+<!-- cmd: column_layout: [1, 1] -->
+
+<!-- cmd: column: 0 -->
+
+## Cargo.toml
+
+```toml +line_numbers {0|7}
+[package]
+name = "bevy-introduction"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.15.0"
+```
+
+<!-- cmd:pause -->
+<!-- cmd: column: 1 -->
+
+## examples/002-bevy_app/main.rs
+
 <!-- include-code: examples/002-bevy_app/main.rs§1 -->
-```rust +line_numbers {1|4|all}
+```rust +line_numbers {0|1|4|all}
 use bevy::prelude::*;
 
 fn main() {
     App::new().run();
 }
 ```
+
+<!-- cmd: reset_layout -->
 
 <!-- cmd:pause -->
 ```sh +exec
