@@ -298,9 +298,12 @@ fn bark(dogs: Query<(&Dog, &Name)>) {
 just run 007-dogs_with_names
 ```
 
-Reuse of components (1/2)
-=========================
+Reuse of components
+===================
 
+<!-- cmd: column_layout: [3, 2] -->
+
+<!-- cmd: column: 0 -->
 <!-- include-code: examples/008-cats/main.rs§1 -->
 ```rust +line_numbers {0|1-2|4|8|1-2,4,8}
 #[derive(Component)]
@@ -314,9 +317,8 @@ fn add_animals(mut commands: Commands) {
 }
 ```
 
-Reuse of components (2/2)
-=========================
-
+<!-- cmd: pause -->
+<!-- cmd: column: 1 -->
 <!-- include-code: examples/008-cats/main.rs§2 -->
 ```rust +line_numbers {0|1-5|1-5,11}
 fn meow(cats: Query<(&Cat, &Name)>) {
@@ -336,6 +338,7 @@ fn main() {
 ```
 
 <!-- cmd:pause -->
+<!-- cmd: reset_layout -->
 ```sh +exec
 just run 008-cats
 ```
