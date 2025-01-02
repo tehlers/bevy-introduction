@@ -347,12 +347,12 @@ Plugins
 =======
 
 <!-- include-code: examples/009-bevy_minimal_plugins/main.rs§1 -->
-```rust +line_numbers {4|all}
+```rust +line_numbers {0|4}
 fn main() {
     let mut app = App::new();
 
     app.add_plugins(MinimalPlugins)
-        .add_systems(Startup, add_dogs)
+        .add_systems(Startup, add_animals)
         .add_systems(Update, (bark, meow));
 
     app.run();

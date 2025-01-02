@@ -9,7 +9,7 @@ struct Dog;
 #[derive(Component)]
 struct Name(String);
 
-fn add_dogs(mut commands: Commands) {
+fn add_animals(mut commands: Commands) {
     commands.spawn((Dog, Name("Hachikō".to_string())));
     commands.spawn((Dog, Name("Laika".to_string())));
     commands.spawn((Dog, Name("Rantanplan".to_string())));
@@ -28,12 +28,12 @@ fn meow(cats: Query<(&Cat, &Name)>) {
     }
 }
 
-// example-start: 1 {4|all}
+// example-start: 1 {0|4}
 fn main() {
     let mut app = App::new();
 
     app.add_plugins(MinimalPlugins)
-        .add_systems(Startup, add_dogs)
+        .add_systems(Startup, add_animals)
         .add_systems(Update, (bark, meow));
 
     app.run();
