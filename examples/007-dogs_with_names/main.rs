@@ -3,7 +3,7 @@ use bevy::prelude::*;
 #[derive(Component)]
 struct Dog;
 
-// example-start: 1 {1,2|5-7|10|11|12|all}
+// example-start: 1 {0|1,2|5-7|10|11|12|1-2,5-7,10-14}
 #[derive(Component)]
 struct Name(String);
 

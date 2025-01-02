@@ -1,4 +1,4 @@
-// example-start: 1 {3-5|8|all}
+// example-start: 1 {0|3-5|3-5,8}
 use bevy::prelude::*;
 
 fn hello_world() {

@@ -6,7 +6,7 @@ struct Dog;
 #[derive(Component)]
 struct Name(String);
 
-// example-start: 1 {1,2|8|all}
+// example-start: 1 {0|1-2|4|8|1-2,4,8}
 #[derive(Component)]
 struct Cat;
 
@@ -24,7 +24,7 @@ fn bark(dogs: Query<(&Dog, &Name)>) {
     }
 }
 
-// example-start: 2 {1-5|11|all}
+// example-start: 2 {0|1-5|1-5,11}
 fn meow(cats: Query<(&Cat, &Name)>) {
     for (_, name) in cats.iter() {
         println!("{}: \"Meow\"", name.0);

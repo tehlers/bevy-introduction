@@ -187,7 +187,7 @@ Systems
 =======
 
 <!-- include-code: examples/003-bevy_hello_world/main.rs§1 -->
-```rust +line_numbers {3-5|8|all}
+```rust +line_numbers {0|3-5|3-5,8}
 use bevy::prelude::*;
 
 fn hello_world() {
@@ -208,7 +208,7 @@ Components
 ==========
 
 <!-- include-code: examples/004-dog/main.rs§1 -->
-```rust +line_numbers {3,4|6|7|13|all}
+```rust +line_numbers {0|3,4|6|7|3-8|3-8,13}
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -235,7 +235,7 @@ Queries
 =======
 
 <!-- include-code: examples/005-barking_dog/main.rs§1 -->
-```rust +line_numbers {1|2-4|10|all}
+```rust +line_numbers {0|1|2-4|1-5|1-5,10}
 fn bark(dogs: Query<&Dog>) {
     for _ in dogs.iter() {
         println!("Woof");
@@ -259,7 +259,7 @@ Multiple entities
 =================
 
 <!-- include-code: examples/006-barking_dogs/main.rs§1 -->
-```rust +line_numbers
+```rust +line_numbers {0|3-4}
 fn add_dogs(mut commands: Commands) {
     commands.spawn(Dog);
     commands.spawn(Dog);
@@ -276,7 +276,7 @@ Multiple components
 ===================
 
 <!-- include-code: examples/007-dogs_with_names/main.rs§1 -->
-```rust +line_numbers {1,2|5-7|10|11|12|all}
+```rust +line_numbers {0|1,2|5-7|10|11|12|1-2,5-7,10-14}
 #[derive(Component)]
 struct Name(String);
 
@@ -302,7 +302,7 @@ Reuse of components (1/2)
 =========================
 
 <!-- include-code: examples/008-cats/main.rs§1 -->
-```rust +line_numbers {1,2|8|all}
+```rust +line_numbers {0|1-2|4|8|1-2,4,8}
 #[derive(Component)]
 struct Cat;
 
@@ -318,7 +318,7 @@ Reuse of components (2/2)
 =========================
 
 <!-- include-code: examples/008-cats/main.rs§2 -->
-```rust +line_numbers {1-5|11|all}
+```rust +line_numbers {0|1-5|1-5,11}
 fn meow(cats: Query<(&Cat, &Name)>) {
     for (_, name) in cats.iter() {
         println!("{}: \"Meow\"", name.0);

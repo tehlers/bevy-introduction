@@ -3,7 +3,7 @@ use bevy::prelude::*;
 #[derive(Component)]
 struct Dog;
 
-// example-start: 1
+// example-start: 1 {0|3-4}
 fn add_dogs(mut commands: Commands) {
     commands.spawn(Dog);
     commands.spawn(Dog);
