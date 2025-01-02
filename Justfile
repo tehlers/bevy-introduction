@@ -10,7 +10,7 @@ run example:
 # Start presentation
 [group("Run")]
 present:
-    presenterm --enable-snippet-execution --present bevy-introduction.md
+    presenterm --enable-snippet-execution --present --validate-overflows bevy-introduction.md
 
 # Format the source code
 [group("Dev")]
