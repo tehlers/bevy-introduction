@@ -3,6 +3,9 @@ title: Game development with Rust and Bevy
 sub_title: An introduction to Bevy (Version 0.15.0)
 theme:
   name: dark
+  override:
+    footer:
+      style: empty
 options:
   command_prefix: "cmd:"
   implicit_slide_ends: true
