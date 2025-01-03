@@ -59,7 +59,7 @@ struct OnTitleScreen;
 #[derive(Component)]
 struct OnGameScreen;
 
-// example-start: 1 {0|1|2|all}
+// example-start: 1 {0|1|all}
 #[derive(Default, Resource)]
 struct Score(u64);
 // example-end: 1
@@ -162,7 +162,7 @@ fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWin
     ));
 }
 
-// example-start: 6 {0|1|2|all}
+// example-start: 6 {0|1|all}
 fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>, mut score: ResMut<Score>) {
     score.0 = 0;
     // ...
@@ -360,7 +360,7 @@ fn play_sounds(
     }
 }
 
-// example-start: 2 {0|1|2|3|4|all}
+// example-start: 2 {0|1,7|2,6|3,5|4|all}
 fn handle_score(mut collision_events: EventReader<CollisionEvent>, mut score: ResMut<Score>) {
     for event in collision_events.read() {
         if let Obstacle::Stone = event.obstacle {
@@ -383,6 +383,7 @@ fn check_for_game_over(
 
 // example-start: 4 {0|1}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Res<Score>) {
+    // ...
     // example-end: 4
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
 
@@ -399,7 +400,8 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
         OnTitleScreen,
     ));
 
-    // example-start: 5 {0|1-5|1-13|all}
+    // example-start: 5 {0|2-6|2-14|all}
+    // ...
     let score_font = TextFont {
         font: font.clone(),
         font_size: 64.0,

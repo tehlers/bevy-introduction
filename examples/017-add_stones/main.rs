@@ -9,7 +9,7 @@ const MAX_Y: f32 = 1200.0;
 const WALL_THICKNESS: f32 = 20.0;
 const BALL_RADIUS: f32 = 12.0;
 const BALL_SPEED: f32 = 600.0;
-// example-start: 2 {1|2|all}
+// example-start: 2 {0|1|2|all}
 const MARGIN: f32 = 12.0;
 const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
 // example-end: 2
@@ -61,7 +61,7 @@ impl Command for SpawnWall {
     }
 }
 
-// example-start: 1 {1-4|8|9-13|all}
+// example-start: 1 {0|1-4|8,14|9-13|all}
 struct SpawnStone {
     x: f32,
     y: f32,
@@ -113,7 +113,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         },
     ));
 
-    // example-start: 3 {0|1-4|5-7|8-11|all}
+    // example-start: 3 {0|1-4,13|5-7,12|8-11|all}
     for x in (((-MAX_X / 2.0 + WALL_THICKNESS / 2.0 + MARGIN + STONE_SIZE.x / 2.0 + 3.0) as i32)
         ..(MAX_X / 2.0) as i32)
         .step_by((STONE_SIZE.x + MARGIN) as usize)

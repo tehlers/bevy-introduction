@@ -17,7 +17,7 @@ struct Ball {
     velocity: Vec2,
 }
 
-// example-start: 1 {3|all}
+// example-start: 1 {0|3}
 #[derive(Component)]
 struct Collider {
     size: Option<Vec2>,
@@ -53,7 +53,7 @@ struct SpawnWall {
     location: WallLocation,
 }
 
-// example-start: 2 {0|6|all}
+// example-start: 2 {0|6}
 impl Command for SpawnWall {
     fn apply(self, world: &mut World) {
         world.spawn((
@@ -70,7 +70,7 @@ struct SpawnStone {
     y: f32,
 }
 
-// example-start: 3 {7-9|all}
+// example-start: 3 {0|7-9}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
@@ -141,7 +141,7 @@ fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     }
 }
 
-// example-start: 4 {3|6|11|all}
+// example-start: 4 {0|3|3,6|3,6,11}
 fn check_for_collisions(
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<(&Transform, &Collider)>,

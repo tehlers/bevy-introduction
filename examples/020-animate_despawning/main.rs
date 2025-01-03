@@ -25,7 +25,7 @@ struct Collider {
 #[derive(Component)]
 struct Stone;
 
-// example-start: 2
+// example-start: 2 {0|all}
 #[derive(Component)]
 struct Despawning(Timer);
 // example-end: 2
@@ -74,7 +74,7 @@ struct SpawnStone {
     y: f32,
 }
 
-// example-start: 1 {3-9|10,11|15-21|all}
+// example-start: 1 {0|3-9|10,11|15-21|3-11,15-21}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         let layout = TextureAtlasLayout::from_grid(
@@ -178,7 +178,7 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                // example-start: 3 {0|2-3|4|all}
+                // example-start: 3 {0|4}
                 if maybe_stone.is_some() {
                     commands
                         .entity(entity)
@@ -244,7 +244,7 @@ fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collisio
     Some(side)
 }
 
-// example-start: 4 {0|3|4|7|8|9-14|all}
+// example-start: 4 {0|1,5,18|4,6,17|3,7|8,16|9-15|all}
 fn despawn_stones(
     mut commands: Commands,
     time: Res<Time>,
@@ -270,7 +270,7 @@ fn main() {
 
     app.add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
-        // example-start: 5 {0|3|all}
+        // example-start: 5 {0|3}
         .add_systems(
             Update,
             (apply_velocity, check_for_collisions, despawn_stones),

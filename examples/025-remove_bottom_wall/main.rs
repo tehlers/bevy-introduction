@@ -362,7 +362,7 @@ fn play_sounds(
     }
 }
 
-// example-start: 3 {0|1-4|6|7|all}
+// example-start: 3 {0|1-4,10|5,9|6,8|7|all}
 fn check_for_game_over(
     balls: Query<&Transform, With<Ball>>,
     mut game_state: ResMut<NextState<GameState>>,

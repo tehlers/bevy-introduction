@@ -375,7 +375,7 @@ Open a window
 =============
 
 <!-- include-code: examples/010-bevy_default_plugins/main.rs§1 -->
-```rust +line_numbers {4|all}
+```rust +line_numbers {0|4}
 use bevy::prelude::*;
 
 fn main() {
@@ -783,8 +783,11 @@ just run 016-add_collision
 Stones (1/2)
 ============
 
+<!-- cmd: column_layout: [3, 1] -->
+
+<!-- cmd: column: 0 -->
 <!-- include-code: examples/017-add_stones/main.rs§1 -->
-```rust +line_numbers {1-4|8|9-13|all}
+```rust +line_numbers {0|1-4|8,14|9-13|all}
 struct SpawnStone {
     x: f32,
     y: f32,
@@ -803,17 +806,22 @@ impl Command for SpawnStone {
 }
 ```
 
+<!-- cmd: column: 1 -->
+
+## assets/sprites/stone.png
+![ball sprite](assets/sprites/stone.png)
+
 Stones (2/2)
 ============
 
 <!-- include-code: examples/017-add_stones/main.rs§2 -->
-```rust +line_numbers {1|2|all}
+```rust +line_numbers {0|1|2|all}
 const MARGIN: f32 = 12.0;
 const STONE_SIZE: Vec2 = Vec2::new(82.0, 28.0);
 ```
 
 <!-- include-code: examples/017-add_stones/main.rs§3 -->
-```rust +line_numbers {0|1-4|5-7|8-11|all}
+```rust +line_numbers {0|1-4,13|5-7,12|8-11|all}
     for x in (((-MAX_X / 2.0 + WALL_THICKNESS / 2.0 + MARGIN + STONE_SIZE.x / 2.0 + 3.0) as i32)
         ..(MAX_X / 2.0) as i32)
         .step_by((STONE_SIZE.x + MARGIN) as usize)
@@ -838,7 +846,7 @@ Collision with stones (1/3)
 ===========================
 
 <!-- include-code: examples/018-stone_collision/main.rs§1 -->
-```rust +line_numbers {3|all}
+```rust +line_numbers {0|3}
 #[derive(Component)]
 struct Collider {
     size: Option<Vec2>,
@@ -846,7 +854,7 @@ struct Collider {
 ```
 
 <!-- include-code: examples/018-stone_collision/main.rs§2 -->
-```rust +line_numbers {0|6|all}
+```rust +line_numbers {0|6}
 impl Command for SpawnWall {
     fn apply(self, world: &mut World) {
         world.spawn((
@@ -862,7 +870,7 @@ Collision with stones (2/3)
 ===========================
 
 <!-- include-code: examples/018-stone_collision/main.rs§3 -->
-```rust +line_numbers {7-9|all}
+```rust +line_numbers {0|7-9}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
@@ -882,7 +890,7 @@ Collision with stones (3/3)
 ===========================
 
 <!-- include-code: examples/018-stone_collision/main.rs§4 -->
-```rust +line_numbers {3|6|11|all}
+```rust +line_numbers {0|3|3,6|3,6,11}
 fn check_for_collisions(
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<(&Transform, &Collider)>,
@@ -907,13 +915,13 @@ Despawn stones (1/2)
 ====================
 
 <!-- include-code: examples/019-despawn_stones/main.rs§1 -->
-```rust +line_numbers
+```rust +line_numbers {0|all}
 #[derive(Component)]
 struct Stone;
 ```
 
 <!-- include-code: examples/019-despawn_stones/main.rs§2 -->
-```rust +line_numbers {0|10|all}
+```rust +line_numbers {0|10}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
@@ -934,7 +942,7 @@ Despawn stones (2/2)
 ====================
 
 <!-- include-code: examples/019-despawn_stones/main.rs§3 -->
-```rust +line_numbers {1|4|7|17-19|all}
+```rust +line_numbers {0|4|4,7|4,7,17-19}
 fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
@@ -964,8 +972,20 @@ just run 019-despawn_stones
 Animation (1/3)
 ===============
 
+<!-- cmd: column_layout: [1, 2, 1] -->
+
+<!-- cmd: column: 0 -->
+
+<!-- cmd: column: 1 -->
+## assets/sprites/stone-animated.png
+![stone sprite sheet](assets/sprites/stone-animated.png)
+
+<!-- cmd: column: 2 -->
+
+<!-- cmd: reset_layout -->
+
 <!-- include-code: examples/020-animate_despawning/main.rs§1 -->
-```rust +line_numbers {3-9|10,11|15-21|all}
+```rust +line_numbers {0|3-9|10,11|15-21|3-11,15-21}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         let layout = TextureAtlasLayout::from_grid(
@@ -1002,13 +1022,13 @@ Animation (2/3)
 ===============
 
 <!-- include-code: examples/020-animate_despawning/main.rs§2 -->
-```rust +line_numbers
+```rust +line_numbers {0|all}
 #[derive(Component)]
 struct Despawning(Timer);
 ```
 
 <!-- include-code: examples/020-animate_despawning/main.rs§3 -->
-```rust +line_numbers {0|2-3|4|all}
+```rust +line_numbers {0|4}
                 if maybe_stone.is_some() {
                     commands
                         .entity(entity)
@@ -1020,7 +1040,7 @@ Animation (3/3)
 ===============
 
 <!-- include-code: examples/020-animate_despawning/main.rs§4 -->
-```rust +line_numbers {0|3|4|7|8|9-14|all}
+```rust +line_numbers {0|1,5,18|4,6,17|3,7|8,16|9-15|all}
 fn despawn_stones(
     mut commands: Commands,
     time: Res<Time>,
@@ -1042,7 +1062,7 @@ fn despawn_stones(
 ```
 
 <!-- include-code: examples/020-animate_despawning/main.rs§5 -->
-```rust +line_numbers {0|3|all}
+```rust +line_numbers {0|3}
         .add_systems(
             Update,
             (apply_velocity, check_for_collisions, despawn_stones),
@@ -1058,7 +1078,7 @@ Events and sounds (1/5)
 =======================
 
 <!-- include-code: examples/021-add_sounds/main.rs§1 -->
-```rust +line_numbers {1-5|10|13-16|all}
+```rust +line_numbers {0|1-5|1-5,10|1-5,10,13-16}
 #[derive(Clone, Copy)]
 enum Obstacle {
     Stone,
@@ -1081,7 +1101,7 @@ Events and sounds (2/5)
 =======================
 
 <!-- include-code: examples/021-add_sounds/main.rs§2 -->
-```rust +line_numbers {6|all}
+```rust +line_numbers {0|6}
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
             Transform::from_translation(self.location.position()).with_scale(self.location.size()),
@@ -1093,7 +1113,7 @@ Events and sounds (2/5)
 ```
 
 <!-- include-code: examples/021-add_sounds/main.rs§3 -->
-```rust +line_numbers {0|12|all}
+```rust +line_numbers {0|12}
             world.spawn((
                 Sprite::from_atlas_image(
                     asset_server.load("sprites/stone-animated.png"),
@@ -1115,7 +1135,7 @@ Events and sounds (3/5)
 =======================
 
 <!-- include-code: examples/021-add_sounds/main.rs§4 -->
-```rust +line_numbers {0|5|18-20|all}
+```rust +line_numbers {0|5|5,18-20}
 fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
@@ -1142,7 +1162,7 @@ Events and sounds (4/5)
 =======================
 
 <!-- include-code: examples/021-add_sounds/main.rs§5 -->
-```rust +line_numbers {0|3|6|8-11|12-15|all}
+```rust +line_numbers {0|1,5,18|3|3,6,17|3,6,7,16,17|8-11|12-15|all}
 fn play_sounds(
     mut commands: Commands,
     mut collision_events: EventReader<CollisionEvent>,
@@ -1167,7 +1187,7 @@ Events and sounds (5/5)
 =======================
 
 <!-- include-code: examples/021-add_sounds/main.rs§6 -->
-```rust +line_numbers {0|7|10|all}
+```rust +line_numbers {0|7|7,10}
         .add_systems(
             Update,
             (
@@ -1189,7 +1209,7 @@ Input (1/5)
 ===========
 
 <!-- include-code: examples/022-add_bat/main.rs§1 -->
-```rust +line_numbers {1-2|6|1-2,6}
+```rust +line_numbers {0|1-2|1-2,6}
 #[derive(Component)]
 struct Bat;
 
@@ -1207,7 +1227,7 @@ const BAT_SIZE: Vec2 = Vec2::new(124.0, 28.0);
 ```
 
 <!-- include-code: examples/022-add_bat/main.rs§3 -->
-```rust +line_numbers {0|2|3|4-6|8|all}
+```rust +line_numbers {0|2|3|4-7|8|all}
     commands.spawn((
         Sprite::from_image(asset_server.load("sprites/bat.png")),
         Transform::from_xyz(0.0, -MAX_Y / 2.0 + WALL_THICKNESS + MARGIN, 0.0),
@@ -1223,7 +1243,7 @@ Input (2/5)
 ===========
 
 <!-- include-code: examples/022-add_bat/main.rs§4 -->
-```rust +line_numbers
+```rust +line_numbers {0|all}
             Obstacle::Bat => commands.spawn((
                 AudioPlayer::new(asset_server.load("sounds/bat.ogg")),
                 PlaybackSettings::DESPAWN,
@@ -1252,7 +1272,7 @@ const BAT_RIGHT_BORDER: f32 = -BAT_LEFT_BORDER;
 ```
 
 <!-- include-code: examples/022-add_bat/main.rs§7 -->
-```rust +line_numbers {0|1|2|3-6|all}
+```rust +line_numbers {0|1,8|2,7|3-6|all}
 fn move_bat(mut motion: EventReader<MouseMotion>, mut bat_query: Query<&mut Transform, With<Bat>>) {
     for event in motion.read() {
         for mut bat in &mut bat_query {
@@ -1292,7 +1312,7 @@ use bevy::{
 ```
 
 <!-- include-code: examples/022-add_bat/main.rs§10 -->
-```rust +line_numbers {0|4|6-7|4,6-7}
+```rust +line_numbers {0|4|4,6-7}
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -1358,7 +1378,7 @@ Game states (3/5)
 =================
 
 <!-- include-code: examples/023-add_title/main.rs§4 -->
-```rust +line_numbers {0|1|2|4-8|10-14|all}
+```rust +line_numbers {0|1,15|2|4-8|10-14|all}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
 
@@ -1377,7 +1397,7 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
 ```
 
 <!-- include-code: examples/023-add_title/main.rs§5 -->
-```rust +line_numbers {0|1|2|all}
+```rust +line_numbers {0|1,3|all}
 fn start_game(mut game_state: ResMut<NextState<GameState>>) {
     game_state.set(GameState::Game);
 }
@@ -1387,7 +1407,7 @@ Game states (4/5)
 =================
 
 <!-- include-code: examples/023-add_title/main.rs§6 -->
-```rust +line_numbers {26|5|6|7|8-13|23|5-13,23,26}
+```rust +line_numbers {0|26|5|6|7|8-13|23|5-13,23,26}
 fn main() {
     let mut app = App::new();
 
@@ -1549,7 +1569,7 @@ Despawn on game state changes (6/6)
 ===================================
 
 <!-- include-code: examples/024-despawn_with_state_change/main.rs§6 -->
-```rust +line_numbers {0|1|2|3|all}
+```rust +line_numbers {0|1,5|2,4|3|all}
 fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
     for entity in &to_despawn {
         commands.entity(entity).despawn_recursive();
@@ -1628,7 +1648,7 @@ Game over (3/3)
 ===============
 
 <!-- include-code: examples/025-remove_bottom_wall/main.rs§3 -->
-```rust +line_numbers {0|1-4|6|7|all}
+```rust +line_numbers {0|1-4,10|5,9|6,8|7|all}
 fn check_for_game_over(
     balls: Query<&Transform, With<Ball>>,
     mut game_state: ResMut<NextState<GameState>>,
@@ -1666,13 +1686,13 @@ Resources (1/4)
 ===============
 
 <!-- include-code: examples/026-add_score/main.rs§1 -->
-```rust +line_numbers {0|1|2|all}
+```rust +line_numbers {0|1|all}
 #[derive(Default, Resource)]
 struct Score(u64);
 ```
 
 <!-- include-code: examples/026-add_score/main.rs§2 -->
-```rust +line_numbers {0|1|2|3|4|all}
+```rust +line_numbers {0|1,7|2,6|3,5|4|all}
 fn handle_score(mut collision_events: EventReader<CollisionEvent>, mut score: ResMut<Score>) {
     for event in collision_events.read() {
         if let Obstacle::Stone = event.obstacle {
@@ -1712,10 +1732,12 @@ Resources (3/4)
 <!-- include-code: examples/026-add_score/main.rs§4 -->
 ```rust +line_numbers {0|1}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Res<Score>) {
+    // ...
 ```
 
 <!-- include-code: examples/026-add_score/main.rs§5 -->
-```rust +line_numbers {0|1-5|1-13|all}
+```rust +line_numbers {0|2-6|2-14|all}
+    // ...
     let score_font = TextFont {
         font: font.clone(),
         font_size: 64.0,
@@ -1739,7 +1761,7 @@ Resources (4/4)
 ===============
 
 <!-- include-code: examples/026-add_score/main.rs§6 -->
-```rust +line_numbers {0|1|2|all}
+```rust +line_numbers {0|1|all}
 fn setup_game(mut commands: Commands, asset_server: Res<AssetServer>, mut score: ResMut<Score>) {
     score.0 = 0;
     // ...

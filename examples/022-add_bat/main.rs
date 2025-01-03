@@ -30,7 +30,7 @@ struct Ball {
     velocity: Vec2,
 }
 
-// example-start: 1 {1-2|6|1-2,6}
+// example-start: 1 {0|1-2|1-2,6}
 #[derive(Component)]
 struct Bat;
 
@@ -138,7 +138,7 @@ impl Command for SpawnStone {
     }
 }
 
-// example-start: 10 {0|4|6-7|4,6-7}
+// example-start: 10 {0|4|4,6-7}
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
@@ -184,7 +184,7 @@ fn setup(
         },
     ));
 
-    // example-start: 3 {0|2|3|4-6|8|all}
+    // example-start: 3 {0|2|3|4-7|8|all}
     commands.spawn((
         Sprite::from_image(asset_server.load("sprites/bat.png")),
         Transform::from_xyz(0.0, -MAX_Y / 2.0 + WALL_THICKNESS + MARGIN, 0.0),
@@ -272,7 +272,7 @@ fn check_for_collisions(
     }
 }
 
-// example-start: 7 {0|1|2|3-6|all}
+// example-start: 7 {0|1,8|2,7|3-6|all}
 fn move_bat(mut motion: EventReader<MouseMotion>, mut bat_query: Query<&mut Transform, With<Bat>>) {
     for event in motion.read() {
         for mut bat in &mut bat_query {
@@ -340,7 +340,7 @@ fn play_sounds(
 ) {
     for event in collision_events.read() {
         match event.obstacle {
-            // example-start: 4
+            // example-start: 4 {0|all}
             Obstacle::Bat => commands.spawn((
                 AudioPlayer::new(asset_server.load("sounds/bat.ogg")),
                 PlaybackSettings::DESPAWN,

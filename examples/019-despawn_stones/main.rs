@@ -22,7 +22,7 @@ struct Collider {
     size: Option<Vec2>,
 }
 
-// example-start: 1
+// example-start: 1 {0|all}
 #[derive(Component)]
 struct Stone;
 // example-end: 1
@@ -71,7 +71,7 @@ struct SpawnStone {
     y: f32,
 }
 
-// example-start: 2 {0|10|all}
+// example-start: 2 {0|10}
 impl Command for SpawnStone {
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
@@ -143,7 +143,7 @@ fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     }
 }
 
-// example-start: 3 {1|4|7|17-19|all}
+// example-start: 3 {0|4|4,7|4,7,17-19}
 fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,

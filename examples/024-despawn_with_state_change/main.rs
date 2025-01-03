@@ -386,7 +386,7 @@ fn start_game(mut game_state: ResMut<NextState<GameState>>) {
     game_state.set(GameState::Game);
 }
 
-// example-start: 6 {0|1|2|3|all}
+// example-start: 6 {0|1,5|2,4|3|all}
 fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
     for entity in &to_despawn {
         commands.entity(entity).despawn_recursive();

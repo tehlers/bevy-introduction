@@ -355,7 +355,7 @@ fn play_sounds(
     }
 }
 
-// example-start: 4 {0|1|2|4-8|10-14|all}
+// example-start: 4 {0|1,15|2|4-8|10-14|all}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
 
@@ -373,13 +373,13 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 // example-end: 4
 
-// example-start: 5 {0|1|2|all}
+// example-start: 5 {0|1,3|all}
 fn start_game(mut game_state: ResMut<NextState<GameState>>) {
     game_state.set(GameState::Game);
 }
 // example-end: 5
 
-// example-start: 6 {26|5|6|7|8-13|23|5-13,23,26}
+// example-start: 6 {0|26|5|6|7|8-13|23|5-13,23,26}
 fn main() {
     let mut app = App::new();
 

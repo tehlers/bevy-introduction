@@ -1,4 +1,4 @@
-// example-start: 1 {4|all}
+// example-start: 1 {0|4}
 use bevy::prelude::*;
 
 fn main() {

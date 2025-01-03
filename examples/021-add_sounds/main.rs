@@ -17,7 +17,7 @@ struct Ball {
     velocity: Vec2,
 }
 
-// example-start: 1 {1-5|10|13-16|all}
+// example-start: 1 {0|1-5|1-5,10|1-5,10,13-16}
 #[derive(Clone, Copy)]
 enum Obstacle {
     Stone,
@@ -73,7 +73,7 @@ struct SpawnWall {
 
 impl Command for SpawnWall {
     fn apply(self, world: &mut World) {
-        // example-start: 2 {6|all}
+        // example-start: 2 {0|6}
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
             Transform::from_translation(self.location.position()).with_scale(self.location.size()),
@@ -104,7 +104,7 @@ impl Command for SpawnStone {
         let texture_atlas_layout = texture_atlas_layouts.unwrap().add(layout);
 
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
-            // example-start: 3 {0|12|all}
+            // example-start: 3 {0|12}
             world.spawn((
                 Sprite::from_atlas_image(
                     asset_server.load("sprites/stone-animated.png"),
@@ -180,7 +180,7 @@ fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     }
 }
 
-// example-start: 4 {0|5|18-20|all}
+// example-start: 4 {0|5|5,18-20}
 fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
@@ -286,7 +286,7 @@ fn despawn_stones(
     }
 }
 
-// example-start: 5 {0|3|6|8-11|12-15|all}
+// example-start: 5 {0|1,5,18|3|3,6,17|3,6,7,16,17|8-11|12-15|all}
 fn play_sounds(
     mut commands: Commands,
     mut collision_events: EventReader<CollisionEvent>,
@@ -312,7 +312,7 @@ fn main() {
 
     app.add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
-        // example-start: 6 {0|7|10|all}
+        // example-start: 6 {0|7|7,10}
         .add_systems(
             Update,
             (
