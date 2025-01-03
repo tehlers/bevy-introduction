@@ -1,18 +1,20 @@
-// example-start: 4 {0|2|all}
+// example-start: 5 {0|2}
 use bevy::{
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
     render::camera::ScalingMode,
 };
-// example-end: 4
+// example-end: 5
 
-// example-start: 1 {7-8|4|all}
 const MAX_X: f32 = 1920.0;
 const MAX_Y: f32 = 1200.0;
 const WALL_THICKNESS: f32 = 20.0;
+// example-start: 3 {0|all}
 const BALL_RADIUS: f32 = 12.0;
+// example-end: 3
 const BALL_SPEED: f32 = 600.0;
 
+// example-start: 1 {0|all}
 #[derive(Component)]
 struct Collider;
 // example-end: 1
@@ -51,7 +53,7 @@ struct SpawnWall {
     location: WallLocation,
 }
 
-// example-start: 2 {0|6|all}
+// example-start: 2 {0|6}
 impl Command for SpawnWall {
     fn apply(self, world: &mut World) {
         world.spawn((
@@ -103,7 +105,7 @@ fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     }
 }
 
-// example-start: 3 {1|2|5|3|6|7-13|all}
+// example-start: 4 {0|1,4|2|2,5|3|3,6|7-13|all}
 fn check_for_collisions(
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<&Transform, With<Collider>>,
@@ -117,16 +119,14 @@ fn check_for_collisions(
                     obstacle.scale.truncate() / 2.,
                 ),
             );
-            // example-end: 3
+            // ...
+            // example-end: 4
 
-            // example-start: 6 {1|8-13|15-23|all}
+            // example-start: 7 {0|1,19|2-3|5-10|12-18|all}
             if let Some(collision) = collision {
-                // Reflect the ball's velocity when it collides
                 let mut reflect_x = false;
                 let mut reflect_y = false;
 
-                // Reflect only if the velocity is in the opposite direction of the collision
-                // This prevents the ball from getting stuck inside the bar
                 match collision {
                     Collision::Left => reflect_x = ball.velocity.x > 0.0,
                     Collision::Right => reflect_x = ball.velocity.x < 0.0,
@@ -134,22 +134,20 @@ fn check_for_collisions(
                     Collision::Bottom => reflect_y = ball.velocity.y > 0.0,
                 }
 
-                // Reflect velocity on the x-axis if we hit something on the x-axis
                 if reflect_x {
                     ball.velocity.x = -ball.velocity.x;
                 }
 
-                // Reflect velocity on the y-axis if we hit something on the y-axis
                 if reflect_y {
                     ball.velocity.y = -ball.velocity.y;
                 }
             }
-            // example-end: 6
+            // example-end: 7
         }
     }
 }
 
-// example-start: 5 {1-6|10|11-13|15-29|all}
+// example-start: 6 {0|1-6|8,28|9-11|13-27|all}
 enum Collision {
     Left,
     Right,
@@ -157,8 +155,6 @@ enum Collision {
     Bottom,
 }
 
-// Returns `Some` if `ball` collides with `bounding_box`.
-// The returned `Collision` is the side of `bounding_box` that `ball` hit.
 fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collision> {
     if !ball.intersects(&bounding_box) {
         return None;
@@ -180,13 +176,15 @@ fn ball_collision(ball: BoundingCircle, bounding_box: Aabb2d) -> Option<Collisio
 
     Some(side)
 }
-// example-end: 5
+// example-end: 6
 
 fn main() {
     let mut app = App::new();
 
+    // example-start: 8 {0|3}
     app.add_plugins(DefaultPlugins)
         .add_systems(Startup, setup)
         .add_systems(Update, (apply_velocity, check_for_collisions))
         .run();
+    // example-end: 8
 }
