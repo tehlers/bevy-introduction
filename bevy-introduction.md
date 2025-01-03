@@ -425,7 +425,7 @@ Scale screen
 ============
 
 <!-- include-code: examples/012-scale_screen/main.rs§1 -->
-```rust +line_numbers {4-10|all}
+```rust +line_numbers {0|4-10}
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Camera2d,
@@ -450,7 +450,7 @@ Move sprite (1/2)
 =================
 
 <!-- include-code: examples/013-move_ball/main.rs§1 -->
-```rust +line_numbers {1|3-6|22-24|all}
+```rust +line_numbers {0|1|1,3-6|1,3-6,22-24}
 const BALL_SPEED: f32 = 400.0;
 
 #[derive(Component)]
@@ -483,7 +483,7 @@ Move sprite (2/2)
 =================
 
 <!-- include-code: examples/013-move_ball/main.rs§2 -->
-```rust +line_numbers {1|2-5|13|all}
+```rust +line_numbers {0|1,6|2-5|1-6,13}
 fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     for (ball, mut transform) in &mut balls {
         transform.translation.x += ball.velocity.x * time.delta_secs();
@@ -510,15 +510,14 @@ Walls (1/3)
 ===========
 
 <!-- include-code: examples/014-add_walls/main.rs§1 -->
-```rust +line_numbers {1-2|3|all}
+```rust +line_numbers {0|1-2|3|all}
 const MAX_X: f32 = 1920.0;
 const MAX_Y: f32 = 1200.0;
 const WALL_THICKNESS: f32 = 20.0;
-const BALL_SPEED: f32 = 400.0;
 ```
 
 <!-- include-code: examples/014-add_walls/main.rs§2 -->
-```rust +line_numbers {1|3|4-8|all}
+```rust +line_numbers {0|1|3|4-8|all}
     // Top wall
     commands.spawn((
         Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -534,7 +533,7 @@ Walls (2/3)
 ===========
 
 <!-- include-code: examples/014-add_walls/main.rs§3 -->
-```rust +line_numbers {1-9|11-19|21-29|all}
+```rust +line_numbers {0|1-9|1-19|1-29}
     // Bottom wall
     commands.spawn((
         Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -577,7 +576,7 @@ Command (1/3)
 =============
 
 <!-- include-code: examples/015-use_command_for_walls/main.rs§1 -->
-```rust +line_numbers {1-6|8|9|10-15|18-22|all}
+```rust +line_numbers {0|1-6|8,24|9,16|10-15|18-22|all}
 enum WallLocation {
     Top,
     Bottom,
@@ -608,7 +607,7 @@ Command (2/3)
 =============
 
 <!-- include-code: examples/015-use_command_for_walls/main.rs§2 -->
-```rust +line_numbers {1|2|5|6|7-10|all}
+```rust +line_numbers {0|1,3|2|5,12|6,11|7-10|all}
 struct SpawnWall {
     location: WallLocation,
 }
@@ -627,7 +626,7 @@ Command (3/3)
 =============
 
 <!-- include-code: examples/015-use_command_for_walls/main.rs§3 -->
-```rust +line_numbers {1-3|4-6|7-9|10-12|all}
+```rust +line_numbers {0|1-3|1-6|1-9|all}
     commands.queue(SpawnWall {
         location: WallLocation::Top,
     });

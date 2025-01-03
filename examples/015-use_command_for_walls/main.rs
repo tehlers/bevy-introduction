@@ -10,7 +10,7 @@ struct Ball {
     velocity: Vec2,
 }
 
-// example-start: 1 {1-6|8|9|10-15|18-22|all}
+// example-start: 1 {0|1-6|8,24|9,16|10-15|18-22|all}
 enum WallLocation {
     Top,
     Bottom,
@@ -37,7 +37,7 @@ impl WallLocation {
 }
 // example-end: 1
 
-// example-start: 2 {1|2|5|6|7-10|all}
+// example-start: 2 {0|1,3|2|5,12|6,11|7-10|all}
 struct SpawnWall {
     location: WallLocation,
 }
@@ -64,7 +64,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
         }),
     ));
 
-    // example-start: 3 {1-3|4-6|7-9|10-12|all}
+    // example-start: 3 {0|1-3|1-6|1-9|all}
     commands.queue(SpawnWall {
         location: WallLocation::Top,
     });

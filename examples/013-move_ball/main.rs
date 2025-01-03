@@ -1,6 +1,6 @@
 use bevy::{prelude::*, render::camera::ScalingMode};
 
-// example-start: 1 {1|3-6|22-24|all}
+// example-start: 1 {0|1|1,3-6|1,3-6,22-24}
 const BALL_SPEED: f32 = 400.0;
 
 #[derive(Component)]
@@ -29,7 +29,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 // example-end: 1
 
-// example-start: 2 {1|2-5|13|all}
+// example-start: 2 {0|1,6|2-5|1-6,13}
 fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     for (ball, mut transform) in &mut balls {
         transform.translation.x += ball.velocity.x * time.delta_secs();
