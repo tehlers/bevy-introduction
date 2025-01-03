@@ -6,7 +6,7 @@ struct Dog;
 #[derive(Component)]
 struct Name(String);
 
-// example-start: 1 {0|1-2|4|8|1-2,4,8}
+// example-start: 1 {0|1-2|1-2,4,9|1-2,4,8,9}
 #[derive(Component)]
 struct Cat;
 

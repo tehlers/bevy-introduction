@@ -208,7 +208,7 @@ Components
 ==========
 
 <!-- include-code: examples/004-dog/main.rs§1 -->
-```rust +line_numbers {0|3,4|6|7|3-8|3-8,13}
+```rust +line_numbers {0|3,4|3-4,6,8|3-8|3-8,13}
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -235,7 +235,7 @@ Queries
 =======
 
 <!-- include-code: examples/005-barking_dog/main.rs§1 -->
-```rust +line_numbers {0|1|2-4|1-5|1-5,10}
+```rust +line_numbers {0|1,5|2,4|3|1-5,10}
 fn bark(dogs: Query<&Dog>) {
     for _ in dogs.iter() {
         println!("Woof");
@@ -276,7 +276,7 @@ Multiple components
 ===================
 
 <!-- include-code: examples/007-dogs_with_names/main.rs§1 -->
-```rust +line_numbers {0|1,2|5-7|10|11|12|1-2,5-7,10-14}
+```rust +line_numbers {0|1,2|5-7|10,14|11,13|12|1-2,5-7,10-14}
 #[derive(Component)]
 struct Name(String);
 
@@ -305,7 +305,7 @@ Reuse of components
 
 <!-- cmd: column: 0 -->
 <!-- include-code: examples/008-cats/main.rs§1 -->
-```rust +line_numbers {0|1-2|4|8|1-2,4,8}
+```rust +line_numbers {0|1-2|1-2,4,9|1-2,4,8,9}
 #[derive(Component)]
 struct Cat;
 
@@ -395,7 +395,7 @@ Sprites
 
 <!-- cmd: column: 0 -->
 <!-- include-code: examples/011-sprite/main.rs§1 -->
-```rust +line_numbers {1|2|3|10|all}
+```rust +line_numbers {0|1,4|2|3|1-4,10}
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(Camera2d);
     commands.spawn(Sprite::from_image(asset_server.load("sprites/ball.png")));
@@ -483,7 +483,7 @@ Move sprite (2/2)
 =================
 
 <!-- include-code: examples/013-move_ball/main.rs§2 -->
-```rust +line_numbers {0|1,6|2-5|1-6,13}
+```rust +line_numbers {0|1,6|2,5|3-4|1-6,13}
 fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     for (ball, mut transform) in &mut balls {
         transform.translation.x += ball.velocity.x * time.delta_secs();
@@ -576,7 +576,7 @@ Command (1/3)
 =============
 
 <!-- include-code: examples/015-use_command_for_walls/main.rs§1 -->
-```rust +line_numbers {0|1-6|8,24|9,16|10-15|18-22|all}
+```rust +line_numbers {0|1-6|8,24|9,16|10-15|18,23|19-22|all}
 enum WallLocation {
     Top,
     Bottom,

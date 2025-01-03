@@ -10,7 +10,7 @@ struct Ball {
     velocity: Vec2,
 }
 
-// example-start: 1 {0|1-6|8,24|9,16|10-15|18-22|all}
+// example-start: 1 {0|1-6|8,24|9,16|10-15|18,23|19-22|all}
 enum WallLocation {
     Top,
     Bottom,

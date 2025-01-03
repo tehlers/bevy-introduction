@@ -1,4 +1,4 @@
-// example-start: 1 {0|3,4|6|7|3-8|3-8,13}
+// example-start: 1 {0|3,4|3-4,6,8|3-8|3-8,13}
 use bevy::prelude::*;
 
 #[derive(Component)]

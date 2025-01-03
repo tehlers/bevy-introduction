@@ -29,7 +29,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 // example-end: 1
 
-// example-start: 2 {0|1,6|2-5|1-6,13}
+// example-start: 2 {0|1,6|2,5|3-4|1-6,13}
 fn apply_velocity(mut balls: Query<(&Ball, &mut Transform)>, time: Res<Time>) {
     for (ball, mut transform) in &mut balls {
         transform.translation.x += ball.velocity.x * time.delta_secs();
