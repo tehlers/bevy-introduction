@@ -1,6 +1,6 @@
 ---
 title: Game development with Rust and Bevy
-sub_title: An introduction to Bevy (Version 0.15.0)
+sub_title: An introduction to Bevy (Version 0.15.1)
 theme:
   name: dark
   override:
@@ -117,7 +117,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-bevy = "0.15.0"
+bevy = "0.15.1"
 ```
 
 <!-- cmd:pause -->
@@ -395,7 +395,7 @@ Sprites
 
 <!-- cmd: column: 0 -->
 <!-- include-code: examples/011-sprite/main.rs§1 -->
-```rust +line_numbers {0|1,4|2|3|1-4,10}
+```rust +line_numbers {0|1,4|3|2|1-4,10}
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(Camera2d);
     commands.spawn(Sprite::from_image(asset_server.load("sprites/ball.png")));
