@@ -49,6 +49,7 @@ The Rust toolchain is installed with [Rustup](https://rustup.rs/). Either instal
 
 * `rustc` - the Rust compiler
 * `cargo` - build tool and package manager
+* `clippy-driver` - linter (usually executed with `cargo clippy`)
 * `rust-analyzer` - LSP implementation for Rust
 
 <!-- cmd:end_slide -->
@@ -183,8 +184,8 @@ The actual game logic is implemented in functions that are called **systems**. T
 
 > The ECS pattern encourages clean, decoupled designs by forcing you to break up your app data and logic into its core components. It also helps make your code faster by optimizing memory access patterns and making parallelism easier.
 
-Systems
-=======
+Systems (1/2)
+=============
 
 <!-- include-code: examples/003-bevy_hello_world/main.rs§1 -->
 ```rust +line_numbers {0|3-5|3-5,8}
@@ -203,6 +204,19 @@ fn main() {
 ```sh +exec
 just run 003-bevy_hello_world
 ```
+
+Systems (2/2)
+=============
+
+# Schedules
+
+* Bevy runs **systems** on a schedule.
+* There are around 20 different schedules.
+* The once most commonly used are
+  * `Startup`,
+  * `Update`,
+  * `FixedUpdate`
+  * and state transitions (like `OnEnter` or `OnExit`) --> more on this later
 
 Components
 ==========
@@ -1843,8 +1857,29 @@ cargo test --example 027-add_test
 Caveats and things to keep in mind
 ==================================
 
+* Bevy is still at an early stage of development.
+* The API is not stable, and breaking changes occur with each new version.
+* Documentation and tutorials that are not part of the official Bevy site are often out of date.
+* Immature ecosystem
+
 Documentation and resources
 ===========================
+
+# Bevy project page
+* https://bevyengine.org/
+
+# Unofficial Bevy Cheat Book
+* https://bevy-cheatbook.github.io/
+
+# Bevy examples
+* https://bevyengine.org/examples/
+* https://github.com/bevyengine/bevy/tree/latest/examples
+
+# Migration guides
+* https://bevyengine.org/learn/migration-guides/
+
+# This introduction
+* https://github.com/tehlers/bevy-introduction/
 
 <!-- cmd:end_slide -->
 
