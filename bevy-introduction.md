@@ -30,7 +30,7 @@ In their own words:
 * Focus on a simple data-oriented design
 * Support for 2D and 3D games
 * Built in Rust
-* Cross-platform with support for Linux, MacOS, Windows, iOS and Android
+* Cross-platform with support for Linux, MacOS, Windows, iOS, Android and WebAssembly
 * Active community with new releases roughly every 3-6 months
 
 <!-- cmd: column: 1 -->
@@ -1857,10 +1857,21 @@ cargo test --example 027-add_test
 Caveats and things to keep in mind
 ==================================
 
+<!-- cmd: pause -->
+# Young engine
 * Bevy is still at an early stage of development.
+
+<!-- cmd: pause -->
+# Breaking changes
 * The API is not stable, and breaking changes occur with each new version.
+
+<!-- cmd: pause -->
+# Outdated documentation
 * Documentation and tutorials that are not part of the official Bevy site are often out of date.
-* Immature ecosystem
+
+<!-- cmd: pause -->
+# Immature ecosystem
+* Not so many third-party plugins and tools. For those that do exist, there is the risk that they will be abandoned and not adapted to new Bevy releases.
 
 Documentation and resources
 ===========================
@@ -1873,7 +1884,7 @@ Documentation and resources
 
 # Bevy examples
 * https://bevyengine.org/examples/
-* https://github.com/bevyengine/bevy/tree/latest/examples
+* https://github.com/bevyengine/bevy/tree/latest/examples/
 
 # Migration guides
 * https://bevyengine.org/learn/migration-guides/
@@ -1887,3 +1898,10 @@ Documentation and resources
 
 Thanks for listening and now write some games!
 ==============================================
+
+<!-- cmd:end_slide -->
+
+<!-- cmd:jump_to_middle -->
+
+Any questions?
+==============
