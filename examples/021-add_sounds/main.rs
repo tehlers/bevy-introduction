@@ -198,7 +198,7 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                collision_events.send(CollisionEvent {
+                collision_events.write(CollisionEvent {
                     obstacle: collider.obstacle,
                 });
                 // example-end: 4

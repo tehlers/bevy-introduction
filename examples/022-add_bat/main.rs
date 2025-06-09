@@ -138,14 +138,15 @@ impl Command for SpawnStone {
     }
 }
 
-// example-start: 10 {0|4|4,6-7}
+// example-start: 10 {0|4|4,6-8}
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut windows: Query<&mut Window, With<PrimaryWindow>>,
 ) {
-    let mut primary_window = windows.single_mut();
-    primary_window.cursor_options.visible = false;
+    if let Ok(mut primary_window) = windows.single_mut() {
+        primary_window.cursor_options.visible = false;
+    }
     // example-end: 10
 
     commands.spawn((
@@ -235,7 +236,7 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                collision_events.send(CollisionEvent {
+                collision_events.write(CollisionEvent {
                     obstacle: collider.obstacle,
                 });
 

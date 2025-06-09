@@ -147,8 +147,9 @@ impl Command for SpawnStone {
 }
 
 fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWindow>>) {
-    let mut primary_window = windows.single_mut();
-    primary_window.cursor_options.visible = false;
+    if let Ok(mut primary_window) = windows.single_mut() {
+        primary_window.cursor_options.visible = false;
+    }
 
     commands.spawn((
         Camera2d,
@@ -241,7 +242,7 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                collision_events.send(CollisionEvent {
+                collision_events.write(CollisionEvent {
                     obstacle: collider.obstacle,
                 });
 
@@ -428,7 +429,7 @@ fn start_game(mut game_state: ResMut<NextState<GameState>>) {
 
 fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
     for entity in &to_despawn {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
 }
 

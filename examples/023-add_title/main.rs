@@ -141,8 +141,9 @@ impl Command for SpawnStone {
 
 // example-start: 2 {0|all}
 fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWindow>>) {
-    let mut primary_window = windows.single_mut();
-    primary_window.cursor_options.visible = false;
+    if let Ok(mut primary_window) = windows.single_mut() {
+        primary_window.cursor_options.visible = false;
+    }
 
     commands.spawn((
         Camera2d,
@@ -236,7 +237,7 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                collision_events.send(CollisionEvent {
+                collision_events.write(CollisionEvent {
                     obstacle: collider.obstacle,
                 });
 

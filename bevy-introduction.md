@@ -1,6 +1,6 @@
 ---
 title: Game development with Rust and Bevy
-sub_title: An introduction to Bevy (Version 0.15.2)
+sub_title: An introduction to Bevy (Version 0.16.1)
 theme:
   name: dark
   override:
@@ -118,7 +118,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-bevy = "0.15.2"
+bevy = "0.16.1"
 ```
 
 <!-- cmd:pause -->
@@ -1167,7 +1167,7 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                collision_events.send(CollisionEvent {
+                collision_events.write(CollisionEvent {
                     obstacle: collider.obstacle,
                 });
 ```
@@ -1326,14 +1326,15 @@ use bevy::{
 ```
 
 <!-- include-code: examples/022-add_bat/main.rs§10 -->
-```rust +line_numbers {0|4|4,6-7}
+```rust +line_numbers {0|4|4,6-8}
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     mut windows: Query<&mut Window, With<PrimaryWindow>>,
 ) {
-    let mut primary_window = windows.single_mut();
-    primary_window.cursor_options.visible = false;
+    if let Ok(mut primary_window) = windows.single_mut() {
+        primary_window.cursor_options.visible = false;
+    }
 ```
 
 Input (5/5)
@@ -1362,8 +1363,9 @@ Game states (2/5)
 <!-- include-code: examples/023-add_title/main.rs§2 -->
 ```rust +line_numbers {0|all}
 fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWindow>>) {
-    let mut primary_window = windows.single_mut();
-    primary_window.cursor_options.visible = false;
+    if let Ok(mut primary_window) = windows.single_mut() {
+        primary_window.cursor_options.visible = false;
+    }
 
     commands.spawn((
         Camera2d,
@@ -1586,7 +1588,7 @@ Despawn on game state changes (6/6)
 ```rust +line_numbers {0|1,5|2,4|3|all}
 fn despawn_screen<T: Component>(to_despawn: Query<Entity, With<T>>, mut commands: Commands) {
     for entity in &to_despawn {
-        commands.entity(entity).despawn_recursive();
+        commands.entity(entity).despawn();
     }
 }
 ```
