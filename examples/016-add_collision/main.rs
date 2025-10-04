@@ -1,8 +1,8 @@
 // example-start: 5 {0|2}
 use bevy::{
+    camera::ScalingMode,
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
-    render::camera::ScalingMode,
 };
 // example-end: 5
 

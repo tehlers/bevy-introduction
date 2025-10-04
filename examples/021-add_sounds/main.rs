@@ -1,7 +1,7 @@
 use bevy::{
+    camera::ScalingMode,
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
-    render::camera::ScalingMode,
 };
 
 const MAX_X: f32 = 1920.0;
@@ -30,8 +30,8 @@ struct Collider {
     obstacle: Obstacle,
 }
 
-#[derive(Event)]
-struct CollisionEvent {
+#[derive(Message)]
+struct CollisionMessage {
     obstacle: Obstacle,
 }
 // example-end: 1
@@ -185,7 +185,7 @@ fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<(Entity, &Transform, &Collider, Option<&Stone>)>,
-    mut collision_events: EventWriter<CollisionEvent>,
+    mut collision_messages: MessageWriter<CollisionMessage>,
 ) {
     for (mut ball, ball_transform) in &mut balls {
         for (entity, obstacle, collider, maybe_stone) in &obstacles {
@@ -198,7 +198,7 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                collision_events.write(CollisionEvent {
+                collision_messages.write(CollisionMessage {
                     obstacle: collider.obstacle,
                 });
                 // example-end: 4
@@ -289,11 +289,11 @@ fn despawn_stones(
 // example-start: 5 {0|1,5,18|3|3,6,17|3,6,7,16,17|8-11|12-15|all}
 fn play_sounds(
     mut commands: Commands,
-    mut collision_events: EventReader<CollisionEvent>,
+    mut collision_messages: MessageReader<CollisionMessage>,
     asset_server: Res<AssetServer>,
 ) {
-    for event in collision_events.read() {
-        match event.obstacle {
+    for message in collision_messages.read() {
+        match message.obstacle {
             Obstacle::Stone => commands.spawn((
                 AudioPlayer::new(asset_server.load("sounds/stone.ogg")),
                 PlaybackSettings::DESPAWN,
@@ -322,7 +322,7 @@ fn main() {
                 play_sounds,
             ),
         )
-        .add_event::<CollisionEvent>()
+        .add_message::<CollisionMessage>()
         // example-end: 6
         .run();
 }

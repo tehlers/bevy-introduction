@@ -1,7 +1,7 @@
 use bevy::{
+    camera::ScalingMode,
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
-    render::camera::ScalingMode,
 };
 
 const MAX_X: f32 = 1920.0;

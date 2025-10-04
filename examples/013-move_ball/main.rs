@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::camera::ScalingMode};
+use bevy::{camera::ScalingMode, prelude::*};
 
 // example-start: 1 {0|1|1,3-6|1,3-6,22-24}
 const BALL_SPEED: f32 = 400.0;

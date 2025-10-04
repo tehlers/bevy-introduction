@@ -1,4 +1,4 @@
-use bevy::{prelude::*, render::camera::ScalingMode};
+use bevy::{camera::ScalingMode, prelude::*};
 
 // example-start: 1 {0|1-2|3|all}
 const MAX_X: f32 = 1920.0;

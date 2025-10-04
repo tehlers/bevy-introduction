@@ -711,9 +711,9 @@ fn check_for_collisions(
 <!-- include-code: examples/016-add_collision/main.rs§5 -->
 ```rust +line_numbers {0|2}
 use bevy::{
+    camera::ScalingMode,
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
-    render::camera::ScalingMode,
 };
 ```
 
@@ -1088,8 +1088,8 @@ fn despawn_stones(
 just run 020-animate_despawning
 ```
 
-Events and sounds (1/5)
-=======================
+Messages and sounds (1/5)
+=========================
 
 <!-- include-code: examples/021-add_sounds/main.rs§1 -->
 ```rust +line_numbers {0|1-5|1-5,10|1-5,10,13-16}
@@ -1105,14 +1105,14 @@ struct Collider {
     obstacle: Obstacle,
 }
 
-#[derive(Event)]
-struct CollisionEvent {
+#[derive(Message)]
+struct CollisionMessage {
     obstacle: Obstacle,
 }
 ```
 
-Events and sounds (2/5)
-=======================
+Messages and sounds (2/5)
+=========================
 
 <!-- include-code: examples/021-add_sounds/main.rs§2 -->
 ```rust +line_numbers {0|6}
@@ -1145,8 +1145,8 @@ Events and sounds (2/5)
             ));
 ```
 
-Events and sounds (3/5)
-=======================
+Messages and sounds (3/5)
+=========================
 
 <!-- include-code: examples/021-add_sounds/main.rs§4 -->
 ```rust +line_numbers {0|5|5,18-20}
@@ -1154,7 +1154,7 @@ fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<(Entity, &Transform, &Collider, Option<&Stone>)>,
-    mut collision_events: EventWriter<CollisionEvent>,
+    mut collision_messages: MessageWriter<CollisionMessage>,
 ) {
     for (mut ball, ball_transform) in &mut balls {
         for (entity, obstacle, collider, maybe_stone) in &obstacles {
@@ -1167,23 +1167,23 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                collision_events.write(CollisionEvent {
+                collision_messages.write(CollisionMessage {
                     obstacle: collider.obstacle,
                 });
 ```
 
-Events and sounds (4/5)
-=======================
+Messages and sounds (4/5)
+=========================
 
 <!-- include-code: examples/021-add_sounds/main.rs§5 -->
 ```rust +line_numbers {0|1,5,18|3|3,6,17|3,6,7,16,17|8-11|12-15|all}
 fn play_sounds(
     mut commands: Commands,
-    mut collision_events: EventReader<CollisionEvent>,
+    mut collision_messages: MessageReader<CollisionMessage>,
     asset_server: Res<AssetServer>,
 ) {
-    for event in collision_events.read() {
-        match event.obstacle {
+    for message in collision_messages.read() {
+        match message.obstacle {
             Obstacle::Stone => commands.spawn((
                 AudioPlayer::new(asset_server.load("sounds/stone.ogg")),
                 PlaybackSettings::DESPAWN,
@@ -1197,8 +1197,8 @@ fn play_sounds(
 }
 ```
 
-Events and sounds (5/5)
-=======================
+Messages and sounds (5/5)
+=========================
 
 <!-- include-code: examples/021-add_sounds/main.rs§6 -->
 ```rust +line_numbers {0|7|7,10}
@@ -1211,7 +1211,7 @@ Events and sounds (5/5)
                 play_sounds,
             ),
         )
-        .add_event::<CollisionEvent>()
+        .add_message::<CollisionMessage>()
 ```
 
 <!-- cmd:pause -->
@@ -1270,11 +1270,11 @@ Input (3/5)
 <!-- include-code: examples/022-add_bat/main.rs§5 -->
 ```rust +line_numbers {0|2}
 use bevy::{
+    camera::ScalingMode,
     input::mouse::MouseMotion,
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
-    render::camera::ScalingMode,
-    window::PrimaryWindow,
+    window::{CursorOptions, PrimaryWindow},
 };
 ```
 
@@ -1287,10 +1287,13 @@ const BAT_RIGHT_BORDER: f32 = -BAT_LEFT_BORDER;
 
 <!-- include-code: examples/022-add_bat/main.rs§7 -->
 ```rust +line_numbers {0|1,8|2,7|3-6|all}
-fn move_bat(mut motion: EventReader<MouseMotion>, mut bat_query: Query<&mut Transform, With<Bat>>) {
-    for event in motion.read() {
+fn move_bat(
+    mut motion: MessageReader<MouseMotion>,
+    mut bat_query: Query<&mut Transform, With<Bat>>,
+) {
+    for message in motion.read() {
         for mut bat in &mut bat_query {
-            bat.translation.x += event.delta.x * 2.0;
+            bat.translation.x += message.delta.x * 2.0;
             bat.translation.x = bat.translation.x.clamp(BAT_LEFT_BORDER, BAT_RIGHT_BORDER);
         }
     }
@@ -1317,24 +1320,22 @@ Input (4/5)
 <!-- include-code: examples/022-add_bat/main.rs§9 -->
 ```rust +line_numbers {0|6}
 use bevy::{
+    camera::ScalingMode,
     input::mouse::MouseMotion,
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
-    render::camera::ScalingMode,
-    window::PrimaryWindow,
+    window::{CursorOptions, PrimaryWindow},
 };
 ```
 
 <!-- include-code: examples/022-add_bat/main.rs§10 -->
-```rust +line_numbers {0|4|4,6-8}
+```rust +line_numbers {0|4|4,6}
 fn setup(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
-    mut windows: Query<&mut Window, With<PrimaryWindow>>,
+    mut cursor_options: Single<&mut CursorOptions, With<PrimaryWindow>>,
 ) {
-    if let Ok(mut primary_window) = windows.single_mut() {
-        primary_window.cursor_options.visible = false;
-    }
+    cursor_options.visible = false;
 ```
 
 Input (5/5)
@@ -1362,10 +1363,11 @@ Game states (2/5)
 
 <!-- include-code: examples/023-add_title/main.rs§2 -->
 ```rust +line_numbers {0|all}
-fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWindow>>) {
-    if let Ok(mut primary_window) = windows.single_mut() {
-        primary_window.cursor_options.visible = false;
-    }
+fn setup(
+    mut commands: Commands,
+    mut cursor_options: Single<&mut CursorOptions, With<PrimaryWindow>>,
+) {
+    cursor_options.visible = false;
 
     commands.spawn((
         Camera2d,
@@ -1407,7 +1409,7 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Text2d::new("Breakout"),
         text_font.clone(),
-        TextLayout::new_with_justify(JustifyText::Center),
+        TextLayout::new_with_justify(Justify::Center),
     ));
 }
 ```
@@ -1448,7 +1450,7 @@ fn main() {
             )
                 .run_if(in_state(GameState::Game)),
         )
-        .add_event::<CollisionEvent>()
+        .add_message::<CollisionMessage>()
         .init_state::<GameState>()
         .run();
 }
@@ -1460,11 +1462,11 @@ Game states (5/5)
 <!-- include-code: examples/023-add_title/main.rs§7 -->
 ```rust +line_numbers {0|2}
 use bevy::{
+    camera::ScalingMode,
     input::{common_conditions::input_just_pressed, mouse::MouseMotion},
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
-    render::camera::ScalingMode,
-    window::PrimaryWindow,
+    window::{CursorOptions, PrimaryWindow},
 };
 ```
 
@@ -1502,7 +1504,7 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Text2d::new("Breakout"),
         text_font.clone(),
-        TextLayout::new_with_justify(JustifyText::Center),
+        TextLayout::new_with_justify(Justify::Center),
         OnTitleScreen,
     ));
 }
@@ -1709,9 +1711,9 @@ struct Score(u64);
 
 <!-- include-code: examples/026-add_score/main.rs§2 -->
 ```rust +line_numbers {0|1,7|2,6|3,5|4|all}
-fn handle_score(mut collision_events: EventReader<CollisionEvent>, mut score: ResMut<Score>) {
-    for event in collision_events.read() {
-        if let Obstacle::Stone = event.obstacle {
+fn handle_score(mut collision_messages: MessageReader<CollisionMessage>, mut score: ResMut<Score>) {
+    for message in collision_messages.read() {
+        if let Obstacle::Stone = message.obstacle {
             score.0 += 100;
         }
     }
@@ -1736,7 +1738,7 @@ Resources (2/4)
             )
                 .run_if(in_state(GameState::Game)),
         )
-        .add_event::<CollisionEvent>()
+        .add_message::<CollisionMessage>()
         .init_state::<GameState>()
         .init_resource::<Score>()
         .run();
@@ -1763,7 +1765,7 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
     let mut score_text = commands.spawn((
         Text2d::new(format!("Last score: {}", score.0)),
         score_font.clone(),
-        TextLayout::new_with_justify(JustifyText::Center),
+        TextLayout::new_with_justify(Justify::Center),
         Transform::from_xyz(0.0, -256.0, 0.0),
         OnTitleScreen,
     ));
@@ -1810,15 +1812,15 @@ Testing (2/4)
         let mut app = App::new();
 
         app.init_resource::<Score>()
-            .add_event::<CollisionEvent>()
+            .add_message::<CollisionMessage>()
             .add_systems(Update, handle_score);
 
         app.update();
         assert_eq!(app.world().resource::<Score>().0, 0);
 
         app.world_mut()
-            .resource_mut::<Events<CollisionEvent>>()
-            .send(CollisionEvent {
+            .resource_mut::<Messages<CollisionMessage>>()
+            .write(CollisionMessage {
                 obstacle: Obstacle::Bat,
             });
         app.update();
@@ -1833,16 +1835,16 @@ Testing (3/4)
 ```rust +line_numbers {2-8|10-16|all}
         // ...
         app.world_mut()
-            .resource_mut::<Events<CollisionEvent>>()
-            .send(CollisionEvent {
+            .resource_mut::<Messages<CollisionMessage>>()
+            .write(CollisionMessage {
                 obstacle: Obstacle::Wall,
             });
         app.update();
         assert_eq!(app.world().resource::<Score>().0, 0);
 
         app.world_mut()
-            .resource_mut::<Events<CollisionEvent>>()
-            .send(CollisionEvent {
+            .resource_mut::<Messages<CollisionMessage>>()
+            .write(CollisionMessage {
                 obstacle: Obstacle::Stone,
             });
         app.update();

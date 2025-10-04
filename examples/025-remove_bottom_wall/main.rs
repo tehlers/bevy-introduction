@@ -1,9 +1,9 @@
 use bevy::{
+    camera::ScalingMode,
     input::{common_conditions::input_just_pressed, mouse::MouseMotion},
     math::bounding::{Aabb2d, BoundingCircle, BoundingVolume, IntersectsVolume},
     prelude::*,
-    render::camera::ScalingMode,
-    window::PrimaryWindow,
+    window::{CursorOptions, PrimaryWindow},
 };
 
 const MAX_X: f32 = 1920.0;
@@ -48,8 +48,8 @@ struct Collider {
 #[derive(Component)]
 struct Stone;
 
-#[derive(Event)]
-struct CollisionEvent {
+#[derive(Message)]
+struct CollisionMessage {
     obstacle: Obstacle,
 }
 
@@ -146,10 +146,11 @@ impl Command for SpawnStone {
     }
 }
 
-fn setup(mut commands: Commands, mut windows: Query<&mut Window, With<PrimaryWindow>>) {
-    if let Ok(mut primary_window) = windows.single_mut() {
-        primary_window.cursor_options.visible = false;
-    }
+fn setup(
+    mut commands: Commands,
+    mut cursor_options: Single<&mut CursorOptions, With<PrimaryWindow>>,
+) {
+    cursor_options.visible = false;
 
     commands.spawn((
         Camera2d,
@@ -231,7 +232,7 @@ fn check_for_collisions(
     mut commands: Commands,
     mut balls: Query<(&mut Ball, &Transform)>,
     obstacles: Query<(Entity, &Transform, &Collider, Option<&Stone>)>,
-    mut collision_events: EventWriter<CollisionEvent>,
+    mut collision_messages: MessageWriter<CollisionMessage>,
 ) {
     for (mut ball, ball_transform) in &mut balls {
         for (entity, obstacle, collider, maybe_stone) in &obstacles {
@@ -244,7 +245,7 @@ fn check_for_collisions(
             );
 
             if let Some(collision) = collision {
-                collision_events.write(CollisionEvent {
+                collision_messages.write(CollisionMessage {
                     obstacle: collider.obstacle,
                 });
 
@@ -281,10 +282,13 @@ fn check_for_collisions(
     }
 }
 
-fn move_bat(mut motion: EventReader<MouseMotion>, mut bat_query: Query<&mut Transform, With<Bat>>) {
-    for event in motion.read() {
+fn move_bat(
+    mut motion: MessageReader<MouseMotion>,
+    mut bat_query: Query<&mut Transform, With<Bat>>,
+) {
+    for message in motion.read() {
         for mut bat in &mut bat_query {
-            bat.translation.x += event.delta.x * 2.0;
+            bat.translation.x += message.delta.x * 2.0;
             bat.translation.x = bat.translation.x.clamp(BAT_LEFT_BORDER, BAT_RIGHT_BORDER);
         }
     }
@@ -342,11 +346,11 @@ fn despawn_stones(
 
 fn play_sounds(
     mut commands: Commands,
-    mut collision_events: EventReader<CollisionEvent>,
+    mut collision_messages: MessageReader<CollisionMessage>,
     asset_server: Res<AssetServer>,
 ) {
-    for event in collision_events.read() {
-        match event.obstacle {
+    for message in collision_messages.read() {
+        match message.obstacle {
             Obstacle::Bat => commands.spawn((
                 AudioPlayer::new(asset_server.load("sounds/bat.ogg")),
                 PlaybackSettings::DESPAWN,
@@ -388,7 +392,7 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn((
         Text2d::new("Breakout"),
         text_font.clone(),
-        TextLayout::new_with_justify(JustifyText::Center),
+        TextLayout::new_with_justify(Justify::Center),
         OnTitleScreen,
     ));
 }
@@ -432,7 +436,7 @@ fn main() {
                 .run_if(in_state(GameState::Game)),
         )
         // example-end: 4
-        .add_event::<CollisionEvent>()
+        .add_message::<CollisionMessage>()
         .init_state::<GameState>()
         .run();
 }
