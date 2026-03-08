@@ -1,6 +1,6 @@
 ---
 title: Game development with Rust and Bevy
-sub_title: An introduction to Bevy (Version 0.18.0)
+sub_title: An introduction to Bevy (Version 0.18.1)
 theme:
   name: dark
   override:
@@ -118,7 +118,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-bevy = "0.18.0"
+bevy = "0.18.1"
 ```
 
 <!-- cmd:pause -->
