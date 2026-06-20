@@ -95,6 +95,8 @@ struct SpawnWall {
 }
 
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -114,6 +116,8 @@ struct SpawnStone {
 }
 
 impl Command for SpawnStone {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         let layout = TextureAtlasLayout::from_grid(
             UVec2::new(STONE_SIZE.x as u32, STONE_SIZE.y as u32), /*tile_size*/
@@ -390,18 +394,18 @@ fn check_for_game_over(
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Res<Score>) {
     // ...
     // example-end: 4
-    let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
+    let font: FontSource = asset_server.load("fonts/AllertaStencil-Regular.ttf").into();
 
     let title_font = TextFont {
         font: font.clone(),
-        font_size: 128.0,
+        font_size: FontSize::Px(128.0),
         ..default()
     };
 
     commands.spawn((
         Text2d::new("Breakout"),
         title_font.clone(),
-        TextLayout::new_with_justify(Justify::Center),
+        TextLayout::justify(Justify::Center),
         OnTitleScreen,
     ));
 
@@ -409,14 +413,14 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
     // ...
     let score_font = TextFont {
         font: font.clone(),
-        font_size: 64.0,
+        font_size: FontSize::Px(64.0),
         ..default()
     };
 
     let mut score_text = commands.spawn((
         Text2d::new(format!("Last score: {}", score.0)),
         score_font.clone(),
-        TextLayout::new_with_justify(Justify::Center),
+        TextLayout::justify(Justify::Center),
         Transform::from_xyz(0.0, -256.0, 0.0),
         OnTitleScreen,
     ));

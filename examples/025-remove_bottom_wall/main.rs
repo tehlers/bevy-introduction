@@ -95,6 +95,8 @@ struct SpawnWall {
 }
 
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -114,6 +116,8 @@ struct SpawnStone {
 }
 
 impl Command for SpawnStone {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         let layout = TextureAtlasLayout::from_grid(
             UVec2::new(STONE_SIZE.x as u32, STONE_SIZE.y as u32), /*tile_size*/
@@ -381,18 +385,18 @@ fn check_for_game_over(
 // example-end: 3
 
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
+    let font: FontSource = asset_server.load("fonts/AllertaStencil-Regular.ttf").into();
 
     let text_font = TextFont {
         font: font.clone(),
-        font_size: 128.0,
+        font_size: FontSize::Px(128.0),
         ..default()
     };
 
     commands.spawn((
         Text2d::new("Breakout"),
         text_font.clone(),
-        TextLayout::new_with_justify(Justify::Center),
+        TextLayout::justify(Justify::Center),
         OnTitleScreen,
     ));
 }

@@ -1,6 +1,6 @@
 ---
 title: Game development with Rust and Bevy
-sub_title: An introduction to Bevy (Version 0.18.1)
+sub_title: An introduction to Bevy (Version 0.19.0)
 theme:
   name: dark
   override:
@@ -118,7 +118,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-bevy = "0.18.1"
+bevy = "0.19.0"
 ```
 
 <!-- cmd:pause -->
@@ -621,12 +621,14 @@ Command (2/3)
 =============
 
 <!-- include-code: examples/015-use_command_for_walls/main.rs§2 -->
-```rust +line_numbers {0|1,3|2|5,12|6,11|7-10|all}
+```rust +line_numbers {0|1,3|2|5,6,14|8,13|9-12|all}
 struct SpawnWall {
     location: WallLocation,
 }
 
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -670,8 +672,10 @@ struct Collider;
 ```
 
 <!-- include-code: examples/016-add_collision/main.rs§2 -->
-```rust +line_numbers {0|6}
+```rust +line_numbers {0|8}
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -801,13 +805,15 @@ Stones (1/2)
 
 <!-- cmd: column: 0 -->
 <!-- include-code: examples/017-add_stones/main.rs§1 -->
-```rust +line_numbers {0|1-4|8,14|9-13|all}
+```rust +line_numbers {0|1-4|10,16|11-15|all}
 struct SpawnStone {
     x: f32,
     y: f32,
 }
 
 impl Command for SpawnStone {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
             world.spawn((
@@ -868,8 +874,10 @@ struct Collider {
 ```
 
 <!-- include-code: examples/018-stone_collision/main.rs§2 -->
-```rust +line_numbers {0|6}
+```rust +line_numbers {0|8}
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -884,8 +892,10 @@ Collision with stones (2/3)
 ===========================
 
 <!-- include-code: examples/018-stone_collision/main.rs§3 -->
-```rust +line_numbers {0|7-9}
+```rust +line_numbers {0|9-11}
 impl Command for SpawnStone {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
             world.spawn((
@@ -935,8 +945,10 @@ struct Stone;
 ```
 
 <!-- include-code: examples/019-despawn_stones/main.rs§2 -->
-```rust +line_numbers {0|10}
+```rust +line_numbers {0|12}
 impl Command for SpawnStone {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
             world.spawn((
@@ -999,8 +1011,10 @@ Animation (1/3)
 <!-- cmd: reset_layout -->
 
 <!-- include-code: examples/020-animate_despawning/main.rs§1 -->
-```rust +line_numbers {0|3-9|10,11|15-21|3-11,15-21}
+```rust +line_numbers {0|5-11|12,13|17-23|5-13,17-23}
 impl Command for SpawnStone {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         let layout = TextureAtlasLayout::from_grid(
             UVec2::new(STONE_SIZE.x as u32, STONE_SIZE.y as u32), /*tile_size*/
@@ -1398,18 +1412,18 @@ Game states (3/5)
 <!-- include-code: examples/023-add_title/main.rs§4 -->
 ```rust +line_numbers {0|1,15|2|4-8|10-14|all}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
+    let font: FontSource = asset_server.load("fonts/AllertaStencil-Regular.ttf").into();
 
     let text_font = TextFont {
-        font: font.clone(),
-        font_size: 128.0,
+        font: font,
+        font_size: FontSize::Px(128.0),
         ..default()
     };
 
     commands.spawn((
         Text2d::new("Breakout"),
         text_font.clone(),
-        TextLayout::new_with_justify(Justify::Center),
+        TextLayout::justify(Justify::Center),
     ));
 }
 ```
@@ -1493,18 +1507,18 @@ Despawn on game state changes (2/6)
 <!-- include-code: examples/024-despawn_with_state_change/main.rs§2 -->
 ```rust +line_numbers {0|14}
 fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let font = asset_server.load("fonts/AllertaStencil-Regular.ttf");
+    let font: FontSource = asset_server.load("fonts/AllertaStencil-Regular.ttf").into();
 
     let text_font = TextFont {
         font: font.clone(),
-        font_size: 128.0,
+        font_size: FontSize::Px(128.0),
         ..default()
     };
 
     commands.spawn((
         Text2d::new("Breakout"),
         text_font.clone(),
-        TextLayout::new_with_justify(Justify::Center),
+        TextLayout::justify(Justify::Center),
         OnTitleScreen,
     ));
 }
@@ -1514,8 +1528,10 @@ Despawn on game state changes (3/6)
 ===================================
 
 <!-- include-code: examples/024-despawn_with_state_change/main.rs§3 -->
-```rust +line_numbers {0|10}
+```rust +line_numbers {0|12}
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -1758,14 +1774,14 @@ fn setup_title(mut commands: Commands, asset_server: Res<AssetServer>, score: Re
     // ...
     let score_font = TextFont {
         font: font.clone(),
-        font_size: 64.0,
+        font_size: FontSize::Px(64.0),
         ..default()
     };
 
     let mut score_text = commands.spawn((
         Text2d::new(format!("Last score: {}", score.0)),
         score_font.clone(),
-        TextLayout::new_with_justify(Justify::Center),
+        TextLayout::justify(Justify::Center),
         Transform::from_xyz(0.0, -256.0, 0.0),
         OnTitleScreen,
     ));

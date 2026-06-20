@@ -60,6 +60,8 @@ struct SpawnWall {
 }
 
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -74,8 +76,10 @@ struct SpawnStone {
     y: f32,
 }
 
-// example-start: 1 {0|3-9|10,11|15-21|3-11,15-21}
+// example-start: 1 {0|5-11|12,13|17-23|5-13,17-23}
 impl Command for SpawnStone {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         let layout = TextureAtlasLayout::from_grid(
             UVec2::new(STONE_SIZE.x as u32, STONE_SIZE.y as u32), /*tile_size*/

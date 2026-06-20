@@ -37,12 +37,14 @@ impl WallLocation {
 }
 // example-end: 1
 
-// example-start: 2 {0|1,3|2|5,12|6,11|7-10|all}
+// example-start: 2 {0|1,3|2|5,6,14|8,13|9-12|all}
 struct SpawnWall {
     location: WallLocation,
 }
 
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),

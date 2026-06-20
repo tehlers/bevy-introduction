@@ -53,8 +53,10 @@ struct SpawnWall {
     location: WallLocation,
 }
 
-// example-start: 2 {0|6}
+// example-start: 2 {0|8}
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),

@@ -52,6 +52,8 @@ struct SpawnWall {
 }
 
 impl Command for SpawnWall {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         world.spawn((
             Sprite::from_color(Color::WHITE, Vec2::ONE),
@@ -61,13 +63,15 @@ impl Command for SpawnWall {
     }
 }
 
-// example-start: 1 {0|1-4|8,14|9-13|all}
+// example-start: 1 {0|1-4|10,16|11-15|all}
 struct SpawnStone {
     x: f32,
     y: f32,
 }
 
 impl Command for SpawnStone {
+    type Out = ();
+
     fn apply(self, world: &mut World) {
         if let Some(asset_server) = world.get_resource::<AssetServer>() {
             world.spawn((
